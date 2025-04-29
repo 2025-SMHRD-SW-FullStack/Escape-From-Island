@@ -71,13 +71,13 @@ Maven은 프로젝트 생명주기 개념을 도입하여 빌드 단계를 표�
 
 ### Git 저장소 클론하기
 
-1. **명령줄에서 Git 클론** :
+1. **명령줄에서 Git 클론** 
    ```bash
    git clone https://github.com/example/survival-game.git
    cd survival-game
    ```
 
-2. **Git 클론 후 Maven 프로젝트 초기화** :
+2. **Git 클론 후 Maven 프로젝트 초기화** 
    ```bash
    mvn clean install
    ```
@@ -85,20 +85,20 @@ Maven은 프로젝트 생명주기 개념을 도입하여 빌드 단계를 표�
 
 ### 팀 프로젝트 Maven 워크플로우
 
-1. **저장소 클론 후 처음 빌드** :
+1. **저장소 클론 후 처음 빌드** 
    ```bash
    git clone [repository-url]
    cd [project-folder]
    mvn clean install
    ```
 
-2. **새로운 변경사항 가져오기 및 빌드** :
+2. **새로운 변경사항 가져오기 및 빌드** 
    ```bash
    git pull
    mvn clean install
    ```
 
-3. **의존성 변경이 있을 경우** :
+3. **의존성 변경이 있을 경우** 
    - pom.xml 파일이 변경되었다면 다음 명령 실행
    ```bash
    mvn dependency:purge-local-repository
@@ -109,7 +109,7 @@ Maven은 프로젝트 생명주기 개념을 도입하여 빌드 단계를 표�
 
 ### Git 저장소에서 클론한 Maven 프로젝트 가져오기
 
-1. **Git Perspective 사용** :
+1. **Git Perspective 사용** 
    - `Window > Perspective > Open Perspective > Other...` 선택
    - `Git`을 선택하고 `OK` 클릭
    - `Clone a Git repository` 클릭
@@ -117,7 +117,7 @@ Maven은 프로젝트 생명주기 개념을 도입하여 빌드 단계를 표�
    - 브랜치 선택 후 `Next` 클릭
    - 로컬 저장 위치 지정 후 `Finish` 클릭
 
-2. **클론한 Maven 프로젝트 임포트** :
+2. **클론한 Maven 프로젝트 임포트** 
    - `File > Import...` 선택
    - `Maven > Existing Maven Projects` 선택
    - 클론한 Git 저장소 위치를 루트 디렉토리로 선택
@@ -152,22 +152,22 @@ Maven은 프로젝트 생명주기 개념을 도입하여 빌드 단계를 표�
 
 ### 사전 준비
 
-1. **Java Extension Pack 설치** :
+1. **Java Extension Pack 설치** 
    - Extensions 탭(Ctrl+Shift+X) 열기
    - "Java Extension Pack" 검색 후 설치
 
-2. **Maven for Java 설치** :
+2. **Maven for Java 설치** 
    - Extensions 탭에서 "Maven for Java" 검색 후 설치
 
 ### Git 저장소에서 클론한 Maven 프로젝트 열기
 
-1. **Git 저장소 클론** :
+1. **Git 저장소 클론** 
    - 명령 팔레트 열기 (Ctrl+Shift+P)
    - "Git: Clone" 입력 후 선택
    - 저장소 URL 입력
    - 클론할 로컬 위치 선택
 
-2. **클론한 프로젝트 열기** :
+2. **클론한 프로젝트 열기** 
    - `File > Open Folder...` 선택
    - 클론한 Git 저장소 폴더 선택
    - VS Code가 자동으로 pom.xml 파일을 감지하고 Maven 도구를 활성화
@@ -181,7 +181,7 @@ Maven은 프로젝트 생명주기 개념을 도입하여 빌드 단계를 표�
 ### 터미널에서 Maven 명령어 사용
 
 1. 터미널 열기 (Ctrl+`)
-2. Maven 명령어 직접 실행 :
+2. Maven 명령어 직접 실행 
    ```bash
    mvn clean install
    mvn test
@@ -191,7 +191,7 @@ Maven은 프로젝트 생명주기 개념을 도입하여 빌드 단계를 표�
 ### VS Code Maven 작업 구성
 
 1. `.vscode/tasks.json` 파일 생성 또는 편집
-2. Maven 작업 구성 예시 :
+2. Maven 작업 구성 예시 
    ```json
    {
      "version" : "2.0.0",
@@ -218,7 +218,7 @@ Maven은 프로젝트 생명주기 개념을 도입하여 빌드 단계를 표�
 
 ## 주요 Maven 명령어
 
-Maven의 가장 유용한 명령어들은 다음과 같습니다 :
+Maven의 가장 유용한 명령어들은 아래와 같습니다 
 
 ### 기본 명령어
 
@@ -245,20 +245,20 @@ Maven의 가장 유용한 명령어들은 다음과 같습니다 :
 
 ### Git 및 Maven 통합 관련 문제
 
-1. **Git에서 받아온 프로젝트 빌드 실패** :
+1. **Git에서 받아온 프로젝트 빌드 실패** 
    ```bash
    mvn clean install -U
    ```
    이 명령은 모든 의존성을 강제로 업데이트합니다.
 
-2. **팀원 간 의존성 충돌** :
+2. **팀원 간 의존성 충돌** 
    - pom.xml 병합 충돌 확인
    - 로컬 Maven 저장소 정리
    ```bash
    mvn dependency:purge-local-repository
    ```
 
-3. **Git에 커밋하지 말아야 할 Maven 파일들** :
+3. **Git에 커밋하지 말아야 할 Maven 파일들** 
    - `/target/` 디렉토리 (빌드 결과물)
    - `.classpath`, `.project` (IDE 설정 파일)
    - `.settings/` 디렉토리 (IDE 설정)
@@ -266,51 +266,51 @@ Maven의 가장 유용한 명령어들은 다음과 같습니다 :
 
 ### 의존성 문제 해결
 
-1. **의존성 트리 확인** :
+1. **의존성 트리 확인** 
    ```bash
    mvn dependency:tree
    ```
 
-2. **의존성 충돌 분석** :
+2. **의존성 충돌 분석** 
    ```bash
    mvn dependency:analyze
    ```
 
-3. **로컬 저장소 정리** :
+3. **로컬 저장소 정리** 
    ```bash
    mvn dependency:purge-local-repository
    ```
 
 ### 빌드 문제 해결
 
-1. **메이븐 캐시 삭제** :
+1. **메이븐 캐시 삭제** 
    - Windows : `%USERPROFILE%\.m2\repository` 폴더
    - Linux/Mac : `~/.m2/repository` 폴더
 
-2. **강제 업데이트** :
+2. **강제 업데이트** 
    ```bash
    mvn clean install -U
    ```
 
-3. **오프라인 모드에서 빌드 시도** :
+3. **오프라인 모드에서 빌드 시도** 
    ```bash
    mvn clean install -o
    ```
 
 ### 기타 문제 해결
 
-1. **Maven 버전 확인** :
+1. **Maven 버전 확인** 
    ```bash
    mvn --version
    ```
 
-2. **설정 디버깅** :
+2. **설정 디버깅** 
    ```bash
    mvn help:effective-pom
    mvn help:effective-settings
    ```
 
-3. **플러그인 정보 보기** :
+3. **플러그인 정보 보기** 
    ```bash
    mvn help:describe -Dplugin=org.apache.maven.plugins:maven-compiler-plugin
    ```
