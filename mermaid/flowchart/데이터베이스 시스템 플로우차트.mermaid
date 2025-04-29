@@ -1,0 +1,39 @@
+flowchart TD
+    A[데이터베이스 초기화 - DatabaseManager.initDatabase] --> B[DB 연결 확립 - JDBC Driver 로드]
+    B --> C{연결 성공?}
+    C -->|No| D[오류 메시지 출력]
+    D --> E[false 반환]
+    C -->|Yes| F[테이블 존재 확인 - 메타데이터 쿼리]
+    
+    F --> G{테이블 존재?}
+    G -->|No| H1[테이블 생성 SQL 실행]
+    H1 --> H2[users 테이블 생성]
+    H2 --> H3[achievements 테이블 생성] 
+    H3 --> H4[user_achievements 테이블 생성]
+    G -->|Yes| I[true 반환]
+    H4 --> I
+    
+    I --> J[SurvivalGame에서 초기화 결과 처리]
+    J --> K{초기화 성공?}
+    K -->|Yes| L[게임 시작 진행]
+    K -->|No| M[게임 시작 중단]
+    
+    L --> N[게임 UI에 로그인 메뉴 표시]
+    N --> O{사용자 선택}
+    O -->|로그인| P1[사용자 입력: 아이디/비밀번호]
+    O -->|회원가입| Q1[사용자 입력: 신규 아이디/비밀번호]
+    O -->|뒤로가기| R1[메인 메뉴로 복귀 - '게임 시작 및 메인 흐름 플로우차트.mermaid' 참조]
+    
+    P1 --> P2[UserDAO.authenticateUser 호출]
+    P2 --> P3{인증 성공?}
+    P3 -->|Yes| P4[UserDAO.updateLastLogin 호출]
+    P3 -->|No| N
+    
+    Q1 --> Q2[UserDAO.registerUser 호출]
+    Q2 --> Q3{등록 성공?}
+    Q3 -->|Yes| Q4[UserDAO.authenticateUser 호출]
+    Q3 -->|No| N
+    
+    P4 --> S[사용자 데이터 로드 - User 객체 생성]
+    Q4 --> S
+    S --> T[게임 시작 - '게임 진행 흐름 플로우차트.mermaid' 참조]

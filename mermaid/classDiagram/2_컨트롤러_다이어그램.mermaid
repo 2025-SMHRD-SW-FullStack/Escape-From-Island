@@ -1,0 +1,106 @@
+classDiagram
+    %% 컨트롤러 다이어그램: 게임 로직과 흐름 제어
+
+    %% 컨트롤러 간의 관계
+    GameController "1" --> "1" GameState : 게임상태 관리
+    GameController "1" --> "1" ActionController : 사용
+    GameController "1" --> "1" GameView : 사용
+    GameController --> DTOConverter : 사용
+    GameController --> AuthController : 사용
+    GameController --> AchievementController : 사용
+    ActionController "1" --> "1" CraftingController : 사용
+    ActionController --> Event : 생성
+    CraftingController --> Item : 관리
+
+    %% 열거형 관계
+    ActionController -- ActionType : 처리
+    Constants -- ActionType : 정의
+
+    %% Main 애플리케이션 흐름
+    Main --> SurvivalGame : 생성 및 실행
+    Main --> DatabaseManager : 초기화
+    Main --> ConsoleUI : 생성
+    SurvivalGame --> DatabaseManager : 초기화
+    SurvivalGame --> GameController : 생성
+    
+    class GameController {
+        -GameState gameState
+        -ActionController actionController
+        -GameView view
+        -AuthController authController
+        -AchievementController achievementController
+        +GameController(GameView view)
+        +startGame() void
+        +processDay() void
+        +endDay() void
+        +checkVictory() boolean
+        +handleLogin() boolean
+        +handleRegistration() boolean
+        +processGame() void
+        +processAchievements() void
+        -handleAction(ActionType actionType, String itemName) boolean
+    }
+    
+    class ActionController {
+        -RandomGenerator random
+        -CraftingController craftingController
+        -GameView view
+        +ActionController(GameView view)
+        +performAction(Player player, ActionType actionType, String itemName) boolean
+        +explore(Player player) void
+        +craft(Player player, String itemName) boolean
+        +rest(Player player) void
+        +getRandomEvent() Event
+    }
+    
+    class CraftingController {
+        -Map~String, Item~ availableItems
+        -GameView view
+        +CraftingController(GameView view)
+        +getAvailableItems() List~String~
+        +getCraftableItems(Inventory inventory) List~String~
+        +craftItem(Player player, String itemName) boolean
+        +canCraft(Player player, String itemName) boolean
+        +getItemRecipe(String itemName) Recipe
+        +initializeItems() void
+    }
+    
+    class ActionType {
+        <<열거형>>
+        EXPLORE
+        CRAFT
+        REST
+        -int apCost
+        -String label
+        +getApCost() int
+        +getLabel() String
+    }
+    
+    class Constants {
+        <<정적>>
+        +static final int INITIAL_HP
+        +static final int INITIAL_AP
+        +static final int AP_PER_DAY
+        +static final int REST_HP_GAIN
+        +static final int MIN_DAYS_TO_ESCAPE
+        +static final int EXPLORE_AP_COST
+        +static final int CRAFT_AP_COST
+        +static final int REST_AP_COST
+        +static final int MIN_RESOURCE_AMOUNT
+        +static final int MAX_RESOURCE_AMOUNT
+        +static final double EVENT_CHANCE
+        +static final int GAME_OVER_HP
+        +static final String RAFT_ITEM_NAME
+    }
+    
+    class SurvivalGame {
+        -GameController gameController
+        -GameView view
+        +SurvivalGame(GameView view)
+        +run() void
+        +startGame() void
+    }
+    
+    class Main {
+        +main(String[] args) void
+    } 

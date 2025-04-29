@@ -1,0 +1,91 @@
+classDiagram
+    %% 시스템 전체 구조 요약 다이어그램
+
+    %% 주요 컴포넌트 간의 관계
+    Main --> SurvivalGame : 생성 및 실행
+    SurvivalGame --> GameController : 생성
+    SurvivalGame --> DatabaseManager : 초기화 및 종료
+    SurvivalGame --> GameView : 메시지 표시
+    
+    GameController --> GameState : 게임상태 관리
+    GameController --> ActionController : 액션 처리
+    GameController --> AuthController : 인증 처리
+    GameController --> AchievementController : 업적 처리
+    GameController --> GameView : UI 표시
+    
+    GameState --> Player : 관리
+    Player --> Inventory : 보유
+    
+    ActionController --> CraftingController : 제작 처리
+    
+    AuthController --> UserDAO : 데이터 접근
+    AchievementController --> AchievementDAO : 데이터 접근
+    UserDAO --> DatabaseManager : 연결 사용
+    AchievementDAO --> DatabaseManager : 연결 사용
+    
+    %% 주요 컴포넌트 설명
+    class Main {
+        <<Entry Point>>
+        애플리케이션 시작점
+    }
+    
+    class SurvivalGame {
+        <<Game Manager>>
+        게임 전체 관리 클래스
+        -GameController gameController
+        -GameView view
+        -boolean initialized
+        +SurvivalGame(GameView view)
+        +initialize() boolean
+        +run() void
+        +startGame() void
+        +cleanup() void
+    }
+    
+    class GameController {
+        <<Core Controller>>
+        게임 흐름 제어 핵심 클래스
+    }
+    
+    class GameState {
+        <<Domain Model>>
+        게임 상태 관리
+    }
+    
+    class Player {
+        <<Domain Model>>
+        플레이어 정보 관리
+    }
+    
+    class ActionController {
+        <<Controller>>
+        플레이어 행동 처리
+    }
+    
+    class CraftingController {
+        <<Controller>>
+        아이템 제작 관리
+    }
+    
+    class AuthController {
+        <<Controller>>
+        사용자 인증 처리
+    }
+    
+    class AchievementController {
+        <<Controller>>
+        업적 시스템 관리
+    }
+    
+    class DatabaseManager {
+        <<Data Access>>
+        데이터베이스 연결 관리
+        +initDatabase() boolean
+        +closeConnection() void
+    }
+    
+    class GameView {
+        <<Interface>>
+        UI 인터페이스
+        +displayError(String message) void
+    } 

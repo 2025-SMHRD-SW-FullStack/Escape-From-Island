@@ -1,0 +1,456 @@
+classDiagram
+    %% 주요 게임 클래스 관계
+    Player "1" --* "1" Inventory : 보유함
+    GameState "1" --* "1" Player : 관리함
+    Item -- ItemType : 타입
+    Item "1" --* "1" Recipe : 제작법
+    GameController "1" --> "1" GameState : 게임상태 관리
+    GameController "1" --> "1" ActionController : 사용
+    GameController "1" --> "1" GameView : 사용
+    ActionController --> Event : 생성
+    ActionController "1" --> "1" CraftingController : 사용
+    Event -- EventType : 이벤트 종류
+    ConsoleUI ..|> GameView : 구현
+    GameState --> Event : 트리거
+    Inventory --> Item : 포함
+    CraftingController --> Item : 관리
+    
+    %% 새로운 enum 관계
+    GameState -- GameEndState : 상태
+    RandomGenerator -- ResourceType : 사용
+    ActionController -- ActionType : 처리
+    Constants -- ActionType : 정의
+
+    %% UI 관련 클래스
+    GameView --> UIConstants : 사용
+    ConsoleUI --> UIConstants : 사용
+
+    %% DTO 관련 관계
+    DTOConverter ..> Player : 변환
+    DTOConverter ..> PlayerDTO : 생성
+    DTOConverter ..> Inventory : 변환
+    DTOConverter ..> InventoryDTO : 생성
+    DTOConverter ..> GameEndState : 변환
+    DTOConverter ..> GameEndDTO : 생성
+    GameView ..> PlayerDTO : 표시
+    GameView ..> InventoryDTO : 표시
+    GameView ..> GameEndDTO : 표시
+    GameController --> DTOConverter : 사용
+
+    %% 데이터베이스 관련 클래스
+    GameController --> AuthController : 사용
+    GameController --> AchievementController : 사용
+    AuthController --> UserDAO : 사용
+    AchievementController --> AchievementDAO : 사용
+    User "1" --o "*" Achievement : 획득함
+    DatabaseManager -- UserDAO : 사용
+    DatabaseManager -- AchievementDAO : 사용
+    SurvivalGame --> DatabaseManager : 초기화
+    SurvivalGame --> GameController : 생성
+    
+    %% 메인 애플리케이션 관계
+    Main --> SurvivalGame : 생성 및 실행
+    Main --> DatabaseManager : 초기화
+    Main --> ConsoleUI : 생성
+
+    %% 게임 로직 핵심 클래스
+    class Player {
+        -int hp
+        -int maxHp
+        -int ap
+        -Inventory inventory
+        +Player()
+        +useAP(int amount) void
+        +updateHP(int amount) void
+        +hasAP(int amount) boolean
+        +reset() void
+        +getInventory() Inventory
+        +getHp() int
+        +getMaxHp() int
+        +getAp() int
+        +setAp(int ap) void
+        +addBonusAP(int bonus) void
+    }
+    
+    class Inventory {
+        -Map~String, Integer~ resources
+        -Map~String, Integer~ items
+        +Inventory()
+        +addResource(String name, int amount) void
+        +removeResource(String name, int amount) boolean
+        +addItem(String name) void
+        +removeItem(String name, int amount) boolean
+        +hasResource(String name) boolean
+        +hasResources(Map~String, Integer~ required) boolean
+        +hasItem(String name) boolean
+        +getResourceCount(String name) int
+        +getItemCount(String name) int
+        +getResources() Map~String, Integer~
+        +getItems() Map~String, Integer~
+        +toString() String
+    }
+    
+    class Item {
+        -String name
+        -ItemType type
+        -Recipe recipe
+        +Item(String name, ItemType type, Recipe recipe)
+        +canCraft(Inventory inventory) boolean
+        +getName() String
+        +getType() ItemType
+        +getRecipe() Recipe
+    }
+    
+    class ItemType {
+        <<열거형>>
+        TOOL
+        SHELTER
+        SURVIVAL
+        RAFT
+    }
+    
+    class ResourceType {
+        <<열거형>>
+        WOOD: "나무"
+        STONE: "돌"
+        FOOD: "식량"
+        WATER: "물"
+        CLOTH: "천"
+        METAL: "금속"
+        +getLabel() String
+        +fromLabel(String label) ResourceType
+    }
+    
+    class ActionType {
+        <<열거형>>
+        EXPLORE
+        CRAFT
+        REST
+        -int apCost
+        -String label
+        +getApCost() int
+        +getLabel() String
+    }
+    
+    class GameEndState {
+        <<열거형>>
+        VICTORY: "탈출에 성공했습니다!"
+        DEATH: "체력이 0이 되어 사망했습니다..."
+        GIVE_UP: "게임을 포기했습니다."
+        -String message
+        +getMessage() String
+    }
+    
+    class Recipe {
+        -Map~String, Integer~ resources
+        -Map~String, Integer~ items
+        +Recipe(Map~String, Integer~ resources, Map~String, Integer~ items)
+        +canCraft(Inventory inventory) boolean
+        +consumeResources(Inventory inventory) void
+        +getResourceRequirements() Map~String, Integer~
+        +getItemRequirements() Map~String, Integer~
+    }
+    
+    class GameState {
+        -int day
+        -Player player
+        -boolean gameOver
+        -boolean victory
+        -GameEndState endState
+        +GameState()
+        +nextDay() void
+        +endGame(boolean victory) void
+        +endGame(GameEndState endState) void
+        +isGameOver() boolean
+        +isVictory() boolean
+        +getEndState() GameEndState
+        +getDay() int
+        +getPlayer() Player
+        +checkVictoryCondition() boolean
+    }
+    
+    class Event {
+        -EventType type
+        -String description
+        -Consumer~Player~ effect
+        +Event(EventType type, String description, Consumer~Player~ effect)
+        +execute(Player player) void
+        +getType() EventType
+        +getDescription() String
+    }
+    
+    class EventType {
+        <<열거형>>
+        RESOURCE_GAIN
+        DAMAGE
+        HEAL
+        SPECIAL
+    }
+    
+    class GameController {
+        -GameState gameState
+        -ActionController actionController
+        -GameView view
+        -AuthController authController
+        -AchievementController achievementController
+        +GameController(GameView view)
+        +startGame() void
+        +processDay() void
+        +endDay() void
+        +checkVictory() boolean
+        +handleLogin() boolean
+        +handleRegistration() boolean
+        +processGame() void
+        +processAchievements() void
+        -handleAction(ActionType actionType, String itemName) boolean
+    }
+    
+    class ActionController {
+        -RandomGenerator random
+        -CraftingController craftingController
+        -GameView view
+        +ActionController(GameView view)
+        +performAction(Player player, ActionType actionType, String itemName) boolean
+        +explore(Player player) void
+        +craft(Player player, String itemName) boolean
+        +rest(Player player) void
+        +getRandomEvent() Event
+    }
+    
+    class CraftingController {
+        -Map~String, Item~ availableItems
+        -GameView view
+        +CraftingController(GameView view)
+        +getAvailableItems() List~String~
+        +getCraftableItems(Inventory inventory) List~String~
+        +craftItem(Player player, String itemName) boolean
+        +canCraft(Player player, String itemName) boolean
+        +getItemRecipe(String itemName) Recipe
+        +initializeItems() void
+    }
+    
+    %% 데이터베이스 관련 클래스
+    class DatabaseManager {
+        -Connection connection
+        -static DatabaseManager instance
+        -String url
+        -String user
+        -String password
+        +getInstance() DatabaseManager
+        +getConnection() Connection
+        +initDatabase() void
+        -DatabaseManager()
+        +closeConnection() void
+    }
+
+    class UserDAO {
+        -Connection connection
+        +UserDAO()
+        +registerUser(String username, String password) boolean
+        +authenticateUser(String username, String password) User
+        +getUserById(int userId) User
+        +updateLastLogin(int userId) void
+        -hashPassword(String password) String
+        -verifyPassword(String input, String stored) boolean
+    }
+
+    class AchievementDAO {
+        -Connection connection
+        +AchievementDAO()
+        +getAllAchievements() List~Achievement~
+        +getUserAchievements(int userId) List~Achievement~
+        +unlockAchievement(int userId, int achievementId) boolean
+        +checkAchievement(int userId, String condition) boolean
+    }
+
+    class User {
+        -int userId
+        -String username
+        -Date createdAt
+        -Date lastLogin
+        +User()
+        +User(int userId, String username, Date createdAt, Date lastLogin)
+        +getUserId() int
+        +getUsername() String
+        +getCreatedAt() Date
+        +getLastLogin() Date
+        +setUserId(int userId) void
+        +setUsername(String username) void
+        +setCreatedAt(Date createdAt) void
+        +setLastLogin(Date lastLogin) void
+    }
+
+    class Achievement {
+        -int achievementId
+        -String title
+        -String description
+        -String condition
+        -String type
+        +Achievement()
+        +Achievement(int id, String title, String desc, String cond, String type)
+        +getAchievementId() int
+        +getTitle() String
+        +getDescription() String
+        +getCondition() String
+        +getType() String
+        +setAchievementId(int id) void
+        +setTitle(String title) void
+        +setDescription(String desc) void
+        +setCondition(String cond) void
+        +setType(String type) void
+    }
+
+    class AuthController {
+        -UserDAO userDAO
+        -User currentUser
+        +AuthController()
+        +register(String username, String password) boolean
+        +login(String username, String password) boolean
+        +getCurrentUser() User
+        +logout() void
+    }
+
+    class AchievementController {
+        -AchievementDAO achievementDAO
+        -User currentUser
+        +AchievementController()
+        +AchievementController(User currentUser)
+        +setCurrentUser(User user) void
+        +checkAndUpdateAchievements(GameState gameState) void
+        +getUserAchievements() List~Achievement~
+        +getAchievementTitles() List~String~
+        +getTotalAchievementsCount() int
+        +processAchievements(GameView view) void
+    }
+    
+    %% DTO 클래스
+    class PlayerDTO {
+        -int hp
+        -int maxHp
+        -int ap
+        -int maxAp
+        -int hunger
+        -int maxHunger
+        +PlayerDTO(int hp, int maxHp, int ap, int maxAp, int hunger, int maxHunger)
+        +getHp() int
+        +getMaxHp() int
+        +getAp() int
+        +getMaxAp() int
+        +getHunger() int
+        +getMaxHunger() int
+    }
+    
+    class InventoryDTO {
+        -Map~String, Integer~ items
+        +InventoryDTO(Map~String, Integer~ items)
+        +getItems() Map~String, Integer~
+    }
+    
+    class GameEndDTO {
+        -boolean victory
+        -String message
+        +GameEndDTO(boolean victory, String message)
+        +isVictory() boolean
+        +getMessage() String
+    }
+    
+    class DTOConverter {
+        <<유틸리티>>
+        +convertToDTO(Player player) PlayerDTO
+        +convertToDTO(Inventory inventory) InventoryDTO
+        +convertToDTO(GameEndState endState) GameEndDTO
+    }
+    
+    class UIConstants {
+        <<정적>>
+        +static final String MENU_HEADER
+        +static final String MENU_PLAY
+        +static final String MENU_ACHIEVEMENTS
+        +static final String MENU_QUIT
+        +static final String LOGIN_HEADER
+        +static final String LOGIN_OPTION
+        +static final String REGISTER_OPTION
+        +static final String BACK_OPTION
+        +static final String GAME_HEADER
+        +static final String PLAYER_STATUS
+        +static final String ACTION_EXPLORE
+        +static final String ACTION_CRAFT
+        +static final String ACTION_REST
+        +static final String ACTION_END_DAY
+        +static final String SUCCESS_CRAFT
+        +static final String FAIL_CRAFT
+        +static final String SUCCESS_EXPLORE
+        +static final String SUCCESS_REST
+    }
+    
+    class Constants {
+        <<정적>>
+        +static final int INITIAL_HP
+        +static final int INITIAL_AP
+        +static final int AP_PER_DAY
+        +static final int REST_HP_GAIN
+        +static final int MIN_DAYS_TO_ESCAPE
+        +static final int EXPLORE_AP_COST
+        +static final int CRAFT_AP_COST
+        +static final int REST_AP_COST
+        +static final int MIN_RESOURCE_AMOUNT
+        +static final int MAX_RESOURCE_AMOUNT
+        +static final double EVENT_CHANCE
+        +static final int GAME_OVER_HP
+        +static final String RAFT_ITEM_NAME
+    }
+    
+    class GameView {
+        <<인터페이스>>
+        +displayMenu() void
+        +displayLoginMenu() void
+        +getIntInput(int min, int max) int
+        +getStringInput() String
+        +showMessage(String message) void
+        +displayPlayerStatus(PlayerDTO playerDTO) void
+        +displayDay(int day) void
+        +displayEnding(boolean victory) void
+        +displayEnding(GameEndDTO endDTO) void
+        +displayInventory(InventoryDTO inventoryDTO) void
+        +displayCraftingMenu(List~String~ items) void
+        +displayAchievements(List~String~ achievements, int totalAchievements) void
+    }
+    
+    class ConsoleUI {
+        -Scanner scanner
+        +ConsoleUI()
+        +displayMenu() void
+        +displayLoginMenu() void
+        +getIntInput(int min, int max) int
+        +getStringInput() String
+        +showMessage(String message) void
+        +displayPlayerStatus(PlayerDTO playerDTO) void
+        +displayDay(int day) void
+        +displayEnding(boolean victory) void
+        +displayEnding(GameEndDTO endDTO) void
+        +displayInventory(InventoryDTO inventoryDTO) void
+        +displayCraftingMenu(List~String~ items) void
+        +displayAchievements(List~String~ achievements, int totalAchievements) void
+    }
+    
+    class RandomGenerator {
+        -Random random
+        +RandomGenerator()
+        +getRandomResourceType() ResourceType
+        +getRandomResource() String
+        +isEventTriggered() boolean
+        +generateRandomEvent() Event
+        +getRandomNumber(int min, int max) int
+    }
+    
+    class SurvivalGame {
+        -GameController gameController
+        -GameView view
+        +SurvivalGame(GameView view)
+        +run() void
+        +startGame() void
+    }
+    
+    class Main {
+        +main(String[] args) void
+    }
