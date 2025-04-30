@@ -14,7 +14,11 @@ public class UIConstants {
     public static final String LOGIN_HEADER = "===== 로그인/회원가입 =====";
     public static final String LOGIN_OPTION = "1. 로그인";
     public static final String REGISTER_OPTION = "2. 회원가입";
-    public static final String BACK_OPTION = "3. 돌아가기";
+    
+    // 로그인 화면 상수 4/30 3:56 최호철
+    public static final String Login_ID = "ID : ";
+    public static final String Login_PW = "PassWord : ";    
+    
     
     // 게임 화면 상수
     public static final String GAME_HEADER = "===== %d일차 =====";

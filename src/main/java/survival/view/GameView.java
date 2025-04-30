@@ -41,6 +41,12 @@ public interface GameView {
     void showMessage(String message);
     
     /**
+     * 개행 없이 메시지 표시
+     * @param message 표시할 메시지
+     */
+    void showMessageNoln(String message);
+    
+    /**
      * 플레이어 상태 표시
      * @param playerDTO 플레이어 DTO
      */
