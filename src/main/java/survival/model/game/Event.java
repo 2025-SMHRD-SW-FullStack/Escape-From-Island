@@ -29,6 +29,7 @@ public class Event {
      */
     public void execute(Player player) {
         // 메소드 구현 부분
+    	effect.accept(player); // 정의된 이벤트 효과 실행
     }
     
     /**
