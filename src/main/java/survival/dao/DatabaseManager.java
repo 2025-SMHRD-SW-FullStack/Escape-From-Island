@@ -97,9 +97,9 @@ public class DatabaseManager {
                 System.out.println("config.properties 파일을 찾을 수 없습니다.");
                 // Oracle 기본값 설정
                 driver = "oracle.jdbc.driver.OracleDriver";
-                url = "jdbc:oracle:thin:@localhost:1521:XE";
-                user = "survival_game";
-                password = "password";
+                url = "jdbc:oracle:thin:@project-db-campus.smhrd.com:1524:XE";
+                user = "campus_25SW_FS_p1_6";
+                password = "smhrd6";
                 return;
             }
             
