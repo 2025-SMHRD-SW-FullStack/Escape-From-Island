@@ -1,1 +1,5 @@
-target/
+target
+# Eclipse 관련 파일
+.classpath
+.project
+.settings/
