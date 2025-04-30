@@ -173,7 +173,7 @@ public class ConsoleUI implements GameView {
         System.err.println("===============\n");
     }
 
-	@Override
+	@Override // 4/30 3:57 최호철
 	public void showMessageNoln(String message) {
 		System.out.print(message);
 	}

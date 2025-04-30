@@ -35,7 +35,7 @@ public class SurvivalGame {
         // 초기화 실패 시 오류 메시지 표시
         if (!dbInitSuccess) {
             view.displayError("데이터베이스 초기화 실패로 게임을 시작할 수 없습니다.");
-            return false;
+            return true; // 임시로 변경했습니다. 4/30 15:53 최호철
         }
         
         initialized = true;

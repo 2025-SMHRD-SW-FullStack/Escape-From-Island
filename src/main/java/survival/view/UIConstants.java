@@ -15,7 +15,7 @@ public class UIConstants {
     public static final String LOGIN_OPTION = "1. 로그인";
     public static final String REGISTER_OPTION = "2. 회원가입";
     
-    // 로그인 화면 상수
+    // 로그인 화면 상수 4/30 3:56 최호철
     public static final String Login_ID = "ID : ";
     public static final String Login_PW = "PassWord : ";    
     
