@@ -10,10 +10,6 @@ public class Player {
     private int ap;
     private Inventory inventory;
 
-    public Player() {
-
-    }
-
     public Player(int hp, int maxHp, int ap, Inventory inventory) {
         this.hp = hp;
         this.maxHp = maxHp;

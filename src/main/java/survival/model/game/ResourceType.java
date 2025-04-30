@@ -6,10 +6,7 @@ package survival.model.game;
 public enum ResourceType {
     WOOD("나무"),
     STONE("돌"),
-    FOOD("식량"),
-    WATER("물"),
-    CLOTH("천"),
-    METAL("금속");
+    CLOTH("천");
     
     private final String label;
     

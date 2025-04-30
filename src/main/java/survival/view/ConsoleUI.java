@@ -82,9 +82,7 @@ public class ConsoleUI implements GameView {
         System.out.println("\n===== 플레이어 상태 =====");
         System.out.printf("체력: %d/%d\n", playerDTO.getHealth(), playerDTO.getMaxHealth());
         System.out.printf("행동력: %d/%d\n", playerDTO.getEnergy(), playerDTO.getMaxEnergy());
-        if (playerDTO.getMaxHunger() > 0) {
-            System.out.printf("배고픔: %d/%d\n", playerDTO.getHunger(), playerDTO.getMaxHunger());
-        }
+        
         System.out.println("=======================\n");
     }
     

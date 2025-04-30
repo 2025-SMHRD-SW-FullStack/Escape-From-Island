@@ -42,7 +42,7 @@ public class UserDAO {
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}finally {
-			DatabaseManager.getInstance().closeConnection();
+			
 		}
     	if(result>0) {
     		return true;
@@ -76,7 +76,7 @@ public class UserDAO {
 		} catch (SQLException e) {
 			e.printStackTrace();
 		} finally {
-			DatabaseManager.getInstance().closeConnection();
+			
 		}
     	
         return user; // 임시 반환값
