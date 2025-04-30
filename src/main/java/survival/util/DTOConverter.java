@@ -34,19 +34,36 @@ public class DTOConverter {
     }
     
     /**
-     * Inventory 모델을 InventoryDTO로 변환
+     * Inventory items모델을 InventoryDTO로 변환
      */
-    public static InventoryDTO convertToDTO(Inventory inventory) {
+    public static InventoryDTO itemsConvertToDTO(Inventory inventory) {
         if (inventory == null) {
             return null;
         }
         
-        Map<String, Integer> itemMap = new HashMap<>();
+        Map<String, Integer> itemMap = new HashMap<>(inventory.getItems());
         
         // inventory의 아이템 맵을 가져와서 DTO에 복사
-        // 실제 구현에서는 Inventory 모델의 getItemMap() 같은 메서드가 필요
+        // 실제 구현에서는 Inventory 모델의 getItemMap() 같은 메서드가 필요 // 구현 완 getItems() 구현 필요
         
         return new InventoryDTO(itemMap);
+    }
+    
+    /**
+     * Inventory resources모델을 InventoryDTO로 변환
+     */
+    // 자원DTO 새로 만들었음
+    public static InventoryDTO resourcesConvertToDTO(Inventory inventory) {
+    	if (inventory == null) {
+    		return null;
+    	}
+    	
+    	Map<String, Integer> resourcesMap = new HashMap<>(inventory.getResources());
+    	
+    	// inventory의 아이템 맵을 가져와서 DTO에 복사
+    	// 실제 구현에서는 Inventory 모델의 getItemMap() 같은 메서드가 필요 // 구현 완 getResources()구현 필요
+    	
+    	return new InventoryDTO(resourcesMap);
     }
     
     /**
