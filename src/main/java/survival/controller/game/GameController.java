@@ -75,7 +75,7 @@ public class GameController {
      * 로그인 처리
      * @return 로그인 성공 여부
      */
-    public boolean handleLogin() {
+    public boolean handleLogin(String id, String pw) {
     	// DB에 있는 회원 아이디와 비밀번호가 같다면 로그인 성공 처리
         return false; // 임시 반환값
     }
@@ -84,7 +84,7 @@ public class GameController {
      * 회원가입 처리
      * @return 회원가입 성공 여부
      */
-    public boolean handleRegistration() {
+    public boolean handleRegistration(String id, String pw) {
     	
         return false; // 임시 반환값
     }

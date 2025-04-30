@@ -102,7 +102,6 @@ public class ActionController {
     	// 이벤트 발생 (이벤트 발생 여부 확인 메소드 isEventTriggered())
     	// Yes -> 랜덤 이벤트 처리
     	if(random.isEventTriggered()) {
-    		// 랜덤 이벤트 발생
     		Event event = random.generateRandomEvent();
     		
     		// 이벤트 효과 실행

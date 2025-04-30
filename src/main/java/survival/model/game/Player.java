@@ -43,7 +43,7 @@ public class Player {
      * @param amount 변경할 체력량 (양수: 회복, 음수: 피해)
      * @return 체력 변경 성공 여부
      */
-    public boolean healHP(int amount) {
+    public boolean updateHP(int amount) {
         int tempHp = hp + amount;
 
         if (tempHp > maxHp) {
