@@ -8,6 +8,7 @@ import java.util.Scanner;
 
 import survival.model.game.ActionType;
 import survival.view.GameView;
+import static survival.util.Constants.*;
 
 /**
  * 플레이어 행동을 처리하는 컨트롤러 클래스
@@ -102,7 +103,7 @@ public class ActionController {
     	// 이벤트 발생 (이벤트 발생 여부 확인 메소드 isEventTriggered())
     	// Yes -> 랜덤 이벤트 처리
     	if(random.isEventTriggered()) {
-    		Event event = random.generateRandomEvent();
+    		Event event = getRandomEvent();
     		
     		// 이벤트 효과 실행
     		event.execute(player);
@@ -127,6 +128,10 @@ public class ActionController {
         // CraftingController 객체에서 현재 인벤토리로 제작
     	// 가능한 아이템 목록을 반환하기 getCraftableItems()
     	// 아이템 선택 : 아이템 제작 처리인 craftItem() 메소드 호출
+    	
+    	// 해당 아이템을 만들 수 있는지 확인
+    	
+    	// 레시피나 이런 게 없어서 아직 구현하지 못함
 
     	return false; // 임시 반환값
     }
@@ -139,6 +144,8 @@ public class ActionController {
         // 메소드 구현 부분
     	// 체력 회복 player의 updateHP() 메소드로 체력 업데이트
     	// 체력 회복 메시지 출력 view.showMessage() 메소드
+    	player.updateHP(REST_HP_GAIN);
+    	view.showMessage("체력을 " + REST_HP_GAIN +  " 회복하였습니다.");
     }
     
     /**
@@ -146,6 +153,7 @@ public class ActionController {
      * @return 이벤트 객체
      */
     public Event getRandomEvent() {
-        return null; // 임시 반환값
+        // return null; // 임시 반환값
+    	return random.generateRandomEvent();
     }
 } 
