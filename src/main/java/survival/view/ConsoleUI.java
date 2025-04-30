@@ -36,7 +36,6 @@ public class ConsoleUI implements GameView {
         System.out.println(UIConstants.LOGIN_HEADER);
         System.out.println(UIConstants.LOGIN_OPTION);
         System.out.println(UIConstants.REGISTER_OPTION);
-        System.out.println(UIConstants.BACK_OPTION);
         System.out.print("메뉴를 선택하세요 >> ");
     }
     
@@ -173,4 +172,9 @@ public class ConsoleUI implements GameView {
         System.err.println(message);
         System.err.println("===============\n");
     }
+
+	@Override // 4/30 3:57 최호철
+	public void showMessageNoln(String message) {
+		System.out.print(message);
+	}
 } 

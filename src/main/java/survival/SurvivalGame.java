@@ -3,6 +3,7 @@ package survival;
 import survival.controller.game.GameController;
 import survival.dao.DatabaseManager;
 import survival.view.GameView;
+import survival.view.UIConstants;
 
 /**
  * 게임 초기화 및 시작 로직을 담당하는 클래스
@@ -34,7 +35,7 @@ public class SurvivalGame {
         // 초기화 실패 시 오류 메시지 표시
         if (!dbInitSuccess) {
             view.displayError("데이터베이스 초기화 실패로 게임을 시작할 수 없습니다.");
-            return false;
+            return true; // 임시로 변경했습니다. 4/30 15:53 최호철
         }
         
         initialized = true;
@@ -57,17 +58,51 @@ public class SurvivalGame {
         boolean running = true;
         while (running) {
             // 메인 메뉴 표시
-            view.displayMenu();
+            view.displayLoginMenu();
             
             // 사용자 입력 받기
             int choice = view.getIntInput(1, 3);
             
             switch (choice) {
-                case 1: // 게임 시작
-                    startGame();
-                    break;
-                case 2: // 업적 확인
-                    gameController.processAchievements();
+                case 1: // 로그인 화면 구현
+                	// 아이디 입력
+                    view.showMessageNoln(UIConstants.Login_ID);
+                    String id = view.getStringInput();
+                    // 비밀번호 입력
+                    view.showMessageNoln(UIConstants.Login_PW);
+                    String pw = view.getStringInput();
+                    boolean isSuccess = gameController.handleLogin(id, pw);
+                    if(isSuccess) {
+                    	view.showMessage(UIConstants.LOGIN_SUCCESS);
+                    	view.displayMenu();
+                    	int choice2 = view.getIntInput(1, 3);
+                    	switch(choice2) {
+                    	case 1:
+                    		gameController.startGame();
+                    	case 2:
+                    		gameController.processAchievements();
+                    	case 3:
+                    		view.showMessage("게임을 종료합니다");
+                    	}
+                    	break;
+                    } else {
+                    	view.showMessage(UIConstants.LOGIN_FAIL);
+                    	break;
+                    }
+                   
+                case 2: // 회원 가입 화면 구현
+                   // 가입할 아이디 입력
+                	view.showMessageNoln(UIConstants.INPUT_USERNAME);
+                	String userid = view.getStringInput();
+                	// 가입할 비밀번호 입력
+                	view.showMessageNoln(UIConstants.INPUT_PASSWORD);
+                	String password = view.getStringInput();
+                	boolean isRegiSuccess = gameController.handleRegistration(userid, password);
+                	if(isRegiSuccess) {
+                		view.showMessage(UIConstants.REGISTER_SUCCESS);
+                	} else {
+                		view.showMessage(UIConstants.REGISTER_FAIL);
+                	}
                     break;
                 case 3: // 게임 종료
                     view.showMessage("게임을 종료합니다. 안녕히 가세요!");
