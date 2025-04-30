@@ -5,17 +5,22 @@ package survival.model.game;
  */
 public class GameState {
     // 필드
-    private int day;
-    private Player player;
-    private boolean gameOver;
-    private boolean victory;
-    private GameEndState endState;
+    private int day;    // 일차
+    private Player player;  // 플레이어
+    private boolean gameOver; // 게임 오버
+    private boolean victory; // 승리 조건
+    private GameEndState endState; // 게임 종료 상태 (탈출 성공, 사망, 게임 포기)
     
     /**
      * 기본 생성자
      */
     public GameState() {
         // 생성자 구현 부분
+    	this.day = day;
+    	this.player = player;
+    	this.gameOver = gameOver;
+    	this.victory = victory;
+    	this endState = endState;
     }
     
     /**
@@ -23,6 +28,7 @@ public class GameState {
      */
     public void nextDay() {
         // 메소드 구현 부분
+    	// 다음 날 진행할 때
     }
     
     /**
@@ -41,6 +47,7 @@ public class GameState {
      */
     public void endGame(boolean victory) {
         endGame(victory ? GameEndState.VICTORY : GameEndState.DEATH);
+    
     }
     
     /**
@@ -88,6 +95,7 @@ public class GameState {
      * @return 승리 조건 충족 여부
      */
     public boolean checkVictoryCondition() {
+    	// 승리 조건 : 뗏목을 제작해서 무인도 탈출
         return false; // 임시 반환값
     }
 } 

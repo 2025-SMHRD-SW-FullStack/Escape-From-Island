@@ -22,7 +22,7 @@ public class Player {
      * @param amount 사용할 행동력
      */
     public void useAP(int amount) {
-        // 메소드 구현 부분
+    	
     }
     
     /**
