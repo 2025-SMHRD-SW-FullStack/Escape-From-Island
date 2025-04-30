@@ -20,6 +20,9 @@ public class GameState {
     
     /**
      * 다음 날로 진행
+     * - day 필드 1 증가
+     * - 날짜 변경에 따른 플레이어 상태 업데이트 (허기, 피로도 등)
+     * - 게임 상태 관련 로직 처리
      */
     public void nextDay() {
         // 메소드 구현 부분
