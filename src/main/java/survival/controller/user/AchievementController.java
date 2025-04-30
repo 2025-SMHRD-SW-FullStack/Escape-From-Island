@@ -3,6 +3,7 @@ package survival.controller.user;
 import survival.model.user.User;
 import survival.model.user.Achievement;
 import survival.model.game.GameState;
+import survival.controller.game.GameController;
 import survival.dao.AchievementDAO;
 import survival.view.GameView;
 
@@ -41,7 +42,6 @@ public class AchievementController {
     public void setCurrentUser(User user) {
         this.currentUser = user;
     }
-    
     /**
      * 게임 상태에 따른 업적 확인 및 업데이트
      * @param gameState 게임 상태

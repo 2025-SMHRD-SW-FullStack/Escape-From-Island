@@ -25,7 +25,8 @@ public class AuthController {
      * @return 회원가입 성공 여부
      */
     public boolean register(String username, String password) {
-        return false; // 임시 반환값
+    	
+        return userDAO.registerUser(username, password);
     }
     
     /**
@@ -35,7 +36,8 @@ public class AuthController {
      * @return 로그인 성공 여부
      */
     public boolean login(String username, String password) {
-        return false; // 임시 반환값
+    	currentUser = userDAO.authenticateUser(username, password);
+        return currentUser.getUsername().equals(username);
     }
     
     /**
@@ -46,10 +48,4 @@ public class AuthController {
         return currentUser;
     }
     
-    /**
-     * 로그아웃 처리
-     */
-    public void logout() {
-        // 메소드 구현 부분
-    }
 } 

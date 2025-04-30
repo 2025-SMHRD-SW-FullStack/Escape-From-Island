@@ -44,7 +44,7 @@ public class AchievementDAO {
 				achievement.setTitle(rs.getString("TITLE"));
 				achievement.setDescription(rs.getString("DESCRIPTION"));
 				achievement.setCondition(rs.getString("CONDITION"));
-				achievement.setType("ACHIEVEMENT_TYPE");
+				achievement.setType(rs.getString("ACHIEVEMENT_TYPE"));
 
 				allAchi.add(achievement);
 			}
