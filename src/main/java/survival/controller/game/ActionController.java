@@ -74,21 +74,47 @@ public class ActionController {
     	// 			-> No 자원 획득 메시지
     	
     	// 랜덤한 자원 배열 받아오기
-    	ResourceType[] resources = random.getRandomResources();
+    	ResourceType[] findResources = random.getRandomResources();
     	
     	// 발견한 자원이 없다면 텍스트 출력
-    	if(resources.length == 0) {
+    	if(findResources.length == 0) {
     		view.showMessage("탐험 결과 : 아무 자원도 발견하지 못했습니다.");
     		return;
     	}
     	
-    	// 발견한 자원들이 있다면 사용자에게 자원 목록 보여주기
-    	view.showMessage("다음 자원 중 하나를 선택하세요 : ");
-    	for(int i = 0; i < resources.length; i++) {
-    		view.showMessage((i+1) + ". " + resources[i].getLabel());
+    	// 발견한 자원들이 있다면 플레이어에게 자원 목록 보여주기
+    	view.showMessage("탐험 결과 : 다음 자원을 발견했습니다. \n 하나를 선택하세요 : ");
+    	for(int i = 0; i < findResources.length; i++) {
+    		view.showMessage((i+1) + ". " + findResources[i].getLabel());
     	}
-    	// 그 중 사용자가 하나를 선택 (입력 받기)
+    	// 그 중 플레이어가 하나의 자원을 선택 (입력 받기)
+    	int choice = view.getIntInput(1, findResources.length);
+    	ResourceType selectedResource = findResources[choice-1];
     	
+    	// 선택한 자원의 획득량 결정 (예: 1~3 랜덤)
+    	int amount = random.getRandomNumber(1, 3);
+    	
+    	// 플레이어의 자원 획득
+    	// Player 객체를 통해 자원을 인벤토리에 추가(저장)해야 함!
+    	// Player.inventory.addResource (?) <- 자원 추가 메소드
+    	// 아직 코드 구현 안함
+    	
+    	// 이벤트 발생 (이벤트 발생 여부 확인 메소드 isEventTriggered())
+    	// Yes -> 랜덤 이벤트 처리
+    	if(random.isEventTriggered()) {
+    		// 랜덤 이벤트 발생
+    		Event event = random.generateRandomEvent();
+    		
+    		// 이벤트 효과 실행
+    		event.execute(player);
+    		
+    		// 이벤트 설명 출력
+    		view.showMessage("[이벤트 발생!] " + event.getDescription());
+    	} else {	
+    		// No -> 자원 획득 메시지 출력
+    		view.showMessage(selectedResource.getLabel() + "를(을)" + amount + "개 획득했습니다!");
+    		
+    	}
     	
     }
     
