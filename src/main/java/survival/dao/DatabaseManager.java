@@ -2,6 +2,8 @@ package survival.dao;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.io.IOException;
 import java.io.InputStream;
@@ -18,6 +20,8 @@ public class DatabaseManager {
     private String user;
     private String password;
     private String driver;
+    private PreparedStatement psmt = null;
+	private ResultSet rs = null;
 
     /**
      * 기본 생성자 싱글톤 패턴이니 private으로
@@ -121,6 +125,10 @@ public class DatabaseManager {
      */
     public void closeConnection() {
         try {
+        	if (rs != null)
+				rs.close();
+			if (psmt != null)
+				psmt.close();
             if (connection != null && !connection.isClosed()) {
                 connection.close();
             }
