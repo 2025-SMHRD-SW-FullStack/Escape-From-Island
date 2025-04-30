@@ -114,7 +114,6 @@ public class DatabaseManager {
             url = prop.getProperty("db.url");
             user = prop.getProperty("db.user");
             password = prop.getProperty("db.password");
-            System.out.println(url + user + password);
         } catch (IOException e) {
             e.printStackTrace();
         }

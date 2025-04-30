@@ -38,12 +38,6 @@ public class RandomGenerator {
 
     // 랜덤으로 자원종류 선택, 선택된 종류가 몇 개 있는지 알려주는 메소드
     public ResourceType[] getRandomResources() {
-        // ResourceType[] resourceArray = new ResourceType[getRandomNumber(1, 5)];
-        // String type = resource.getLabel();
-        // return Arrays.stream(resourceArray)
-        // .map(r -> ResourceType.type)
-        // .toArray(ResourceType[]::new);
-
         // 모든 자원종류의 enums 값들 중복 없이 고르기
         List<ResourceType> resourceList = new ArrayList<>(Arrays.asList(ResourceType.values()));
         Collections.shuffle(resourceList);

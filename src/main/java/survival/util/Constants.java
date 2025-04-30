@@ -6,15 +6,16 @@ package survival.util;
 public class Constants {
     // 플레이어 관련 상수
     public static final int INITIAL_HP = 100;
-    public static final int INITIAL_AP = 10;
-    public static final int AP_PER_DAY = 10;
+    public static final int INITIAL_AP = 3;
+    public static final int AP_PER_DAY = 3;
     public static final int REST_HP_GAIN = 20;
     
     // 게임 설정
-    public static final int MIN_DAYS_TO_ESCAPE = 7;
-    public static final int EXPLORE_AP_COST = 2;
-    public static final int CRAFT_AP_COST = 3;
+    public static final int DAYS_TO_ESCAPE = 7;
+    public static final int EXPLORE_AP_COST = 1;
+    public static final int CRAFT_AP_COST = 1;
     public static final int REST_AP_COST = 1;
+    public static final int INITIAL_DAY = 1;
     
     // 자원 관련 상수
     // ResourceType enum으로 이동

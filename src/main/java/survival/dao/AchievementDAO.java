@@ -52,7 +52,7 @@ public class AchievementDAO {
 		} catch (SQLException e) {
 			e.printStackTrace(); // 필요시 로깅 처리
 		} finally {
-			DatabaseManager.getInstance().closeConnection();
+			
 		}
 
 		return allAchi;
@@ -89,7 +89,7 @@ public class AchievementDAO {
 		} catch (SQLException e) {
 			e.printStackTrace(); // 필요시 로깅 처리
 		} finally {
-			DatabaseManager.getInstance().closeConnection();
+			
 		}
 
 		return userAchi;
@@ -117,7 +117,7 @@ public class AchievementDAO {
 	        e.printStackTrace();
 	        return false;
 	    } finally {
-	        DatabaseManager.getInstance().closeConnection();
+	        
 	    }
 	}
 
@@ -147,7 +147,7 @@ public class AchievementDAO {
 	        e.printStackTrace();
 	        return false;
 	    } finally {
-	        DatabaseManager.getInstance().closeConnection();
+	        
 	    }
 	}
 }
