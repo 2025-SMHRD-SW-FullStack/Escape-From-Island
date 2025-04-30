@@ -69,7 +69,7 @@ public class GameController {
      * @return 로그인 성공 여부
      */
     public boolean handleLogin(String id, String pw) {
-        return false; // 임시 반환값
+        return true; // 임시 반환값 4/30 3:54 최호철
     }
     
     /**
@@ -77,7 +77,7 @@ public class GameController {
      * @return 회원가입 성공 여부
      */
     public boolean handleRegistration(String userid, String password) {
-        return false; // 임시 반환값
+        return true; // 임시 반환값 4/30 3:54 최호철
     }
     
     /**
