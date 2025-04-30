@@ -107,14 +107,4 @@ public class GameState {
     public Player getPlayer() {
         return player;
     }
-
-    /**
-     * 승리 조건 확인
-     * 
-     * @return 승리 조건 충족 여부
-     */
-    public boolean checkVictoryCondition() {
-        // 승리 조건 : 뗏목을 제작해서 무인도 탈출
-        return false; // 임시 반환값
-    }
 }
