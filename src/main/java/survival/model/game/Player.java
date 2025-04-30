@@ -9,72 +9,92 @@ public class Player {
     private int maxHp;
     private int ap;
     private Inventory inventory;
-    
-    /**
-     * 기본 생성자
-     */
+
     public Player() {
-        // 생성자 구현 부분
+
     }
-    
+
+    public Player(int hp, int maxHp, int ap, Inventory inventory) {
+        this.hp = hp;
+        this.maxHp = maxHp;
+        this.ap = ap;
+        this.inventory = inventory;
+    }
+
     /**
-     * 행동력 사용
+     * 행동력 사용 (양수: 소모, 음수: 충당)
+     * 
      * @param amount 사용할 행동력
+     * @return 사용 성공 여부
      */
-    public void useAP(int amount) {
-        // 메소드 구현 부분
+    public boolean useAP(int amount) {
+        int tempAp = ap - amount;
+
+        if (tempAp > 0) {
+            ap = tempAp;
+            return true;
+        }
+        return false;
     }
-    
+
     /**
      * 체력 업데이트
+     * 
      * @param amount 변경할 체력량 (양수: 회복, 음수: 피해)
+     * @return 체력 변경 성공 여부
      */
-    public void updateHP(int amount) {
-        // 메소드 구현 부분
+    public boolean healHP(int amount) {
+        int tempHp = hp + amount;
+
+        if (tempHp > maxHp) {
+            hp = maxHp;
+            return true;
+        }
+
+        hp = tempHp;
+        return false;
     }
-    
-    /**
-     * 행동력 충분한지 확인
-     * @param amount 확인할 행동력
-     * @return 충분하면 true, 부족하면 false
-     */
-    public boolean hasAP(int amount) {
-        return false; // 임시 반환값
-    }
-    
+
     /**
      * 플레이어 상태 초기화
      */
     public void reset() {
-        // 메소드 구현 부분
+        ap = 0;
+        hp = maxHp;
+        inventory = new Inventory();
     }
-    
+
     /**
-     * 보너스 행동력 추가
-     * @param bonus 추가할 행동력
+     * 행동력 추가
+     * 
+     * @param amount 추가할 행동력
      */
-    public void addBonusAP(int bonus) {
-        // 메소드 구현 부분
+    public void addAP(int amount) {
+        ap += amount;
     }
-    
+
     // Getter/Setter 메소드
     public Inventory getInventory() {
         return inventory;
     }
-    
+
     public int getHp() {
         return hp;
     }
-    
+
     public int getMaxHp() {
         return maxHp;
     }
-    
+
     public int getAp() {
         return ap;
     }
-    
+
     public void setAp(int ap) {
         this.ap = ap;
     }
-} 
+
+    public boolean hasAP(int apCost) {
+        return ap >= apCost;
+    }
+}
