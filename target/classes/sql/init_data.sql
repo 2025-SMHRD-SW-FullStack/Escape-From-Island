@@ -16,7 +16,7 @@ INSERT INTO ACHIEVEMENTS (title, description, condition, achievement_type) VALUE
 -- 테스트 계정 (개발용 - 실제 서비스에서는 제거)
 -- 비밀번호는 'password'의 단순 해시값으로 가정
 INSERT INTO USERS (username, password) VALUES
-('test_user', 'e7cf3ef4f17c3999a94f2c6f612e8a888e5b1026878e4e19398b23bd38ec221a');
+('test_user', '12345');
 
 -- 테스트 사용자 통계 초기화
 INSERT INTO USER_STATISTICS (user_id, games_played, victories, total_days_survived, resources_collected, items_crafted)

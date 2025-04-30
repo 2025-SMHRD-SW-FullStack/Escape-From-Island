@@ -47,6 +47,8 @@ public class GameController {
      */
     public void processDay() {
         // 메소드 구현 부분
+    	// 하루 동안 발생하는 게임의 핵심 로직
+    	// 자원 변화, 상태 변화(허기, ..), 이벤트 발생
     }
     
     /**
@@ -54,6 +56,11 @@ public class GameController {
      */
     public void endDay() {
         // 메소드 구현 부분
+    	// 하루 결산 , 다음날 준비
+    	// ap관련 처리
+    	// 만약 7일차면 GameState 객체의 endGame <- 게임 종료 처리
+    	// 7일차가 아니면  다음날로 진행하는 메소드인 GameState 객체의
+    	// nextDay를 불러오면 되나?
     }
     
     /**
@@ -69,6 +76,7 @@ public class GameController {
      * @return 로그인 성공 여부
      */
     public boolean handleLogin() {
+    	// DB에 있는 회원 아이디와 비밀번호가 같다면 로그인 성공 처리
         return false; // 임시 반환값
     }
     
@@ -77,6 +85,7 @@ public class GameController {
      * @return 회원가입 성공 여부
      */
     public boolean handleRegistration() {
+    	
         return false; // 임시 반환값
     }
     

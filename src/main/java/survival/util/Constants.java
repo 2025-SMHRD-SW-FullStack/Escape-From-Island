@@ -11,7 +11,7 @@ public class Constants {
     public static final int REST_HP_GAIN = 20;
     
     // 게임 설정
-    public static final int MIN_DAYS_TO_ESCAPE = 15;
+    public static final int MIN_DAYS_TO_ESCAPE = 7;
     public static final int EXPLORE_AP_COST = 2;
     public static final int CRAFT_AP_COST = 3;
     public static final int REST_AP_COST = 1;
