@@ -34,7 +34,7 @@ public class UserDAO {
     	int result = 0;
     	
     	try {
-    		String sql = "INSERT INTO USERS VALUES(?,?)";
+    		String sql = "INSERT INTO USERS (USERNAME, PASSWORD) VALUES(?,?)";
 			psmt = connection.prepareStatement(sql);
 			psmt.setString(1, username);
 			psmt.setString(2, password);
@@ -61,7 +61,7 @@ public class UserDAO {
         User user = null;
         
     	try {
-			String sql = "SELECT * FROM USERS WHERE ID =? AND PW =?";
+			String sql = "SELECT * FROM USERS WHERE USERNAME =? AND PASSWORD =?";
 			psmt = connection.prepareStatement(sql);
 			psmt.setString(1, username);
 			psmt.setString(2, password);
