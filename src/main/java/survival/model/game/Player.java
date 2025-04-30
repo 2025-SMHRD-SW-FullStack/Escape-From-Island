@@ -10,7 +10,6 @@ public class Player {
     private int ap;
     private Inventory inventory;
 
-    
     public Player() {
 
     }
@@ -23,16 +22,18 @@ public class Player {
     }
 
     /**
-     * 행동력 사용
+     * 행동력 사용 (양수: 소모, 음수: 충당)
      * 
      * @param amount 사용할 행동력
+     * @return 사용 성공 여부
      */
     public boolean useAP(int amount) {
-        if (ap >= amount) {
-            ap -= amount;
+        int tempAp = ap - amount;
+
+        if (tempAp > 0) {
+            ap = tempAp;
             return true;
         }
-
         return false;
     }
 
@@ -40,20 +41,18 @@ public class Player {
      * 체력 업데이트
      * 
      * @param amount 변경할 체력량 (양수: 회복, 음수: 피해)
+     * @return 체력 변경 성공 여부
      */
-    public void updateHP(int amount) {
-        // 메소드 구현 부분
-        hp += amount;
-    }
+    public boolean healHP(int amount) {
+        int tempHp = hp + amount;
 
-    /**
-     * 행동력 충분한지 확인
-     * 
-     * @param amount 확인할 행동력
-     * @return 충분하면 true, 부족하면 false
-     */
-    public boolean hasAP(int amount) {
-        return ap >= amount;
+        if (tempHp > maxHp) {
+            hp = maxHp;
+            return true;
+        }
+
+        hp = tempHp;
+        return false;
     }
 
     /**
@@ -66,12 +65,12 @@ public class Player {
     }
 
     /**
-     * 보너스 행동력 추가
+     * 행동력 추가
      * 
-     * @param bonus 추가할 행동력
+     * @param amount 추가할 행동력
      */
-    public void addBonusAP(int bonus) {
-        ap += bonus;
+    public void addAP(int amount) {
+        ap += amount;
     }
 
     // Getter/Setter 메소드
@@ -93,5 +92,9 @@ public class Player {
 
     public void setAp(int ap) {
         this.ap = ap;
+    }
+
+    public boolean hasAP(int apCost) {
+        return ap >= apCost;
     }
 }
