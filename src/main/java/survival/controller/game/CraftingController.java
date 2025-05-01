@@ -8,10 +8,8 @@ import survival.model.game.Recipe;
 import survival.model.game.ResourceType;
 import survival.view.GameView;
 
-import java.util.List;
 import java.util.Map;
 import java.util.HashMap;
-import java.util.ArrayList;
 
 /**
  * 아이템 제작 시스템을 관리하는 컨트롤러 클래스
