@@ -2,7 +2,8 @@ package survival.view;
 
 import survival.dto.GameEndDTO;
 import survival.dto.InventoryDTO;
-import survival.dto.PlayerDTO;
+import survival.model.game.Player;
+import survival.util.Constants;
 
 import java.util.List;
 import java.util.Map;
@@ -73,15 +74,15 @@ public class ConsoleUI implements GameView {
     }
     
     @Override
-    public void displayPlayerStatus(PlayerDTO playerDTO) {
-        if (playerDTO == null) {
+    public void displayPlayerStatus(Player player) {
+        if (player == null) {
             System.out.println("플레이어 정보가 없습니다.");
             return;
         }
         
         System.out.println("\n===== 플레이어 상태 =====");
-        System.out.printf("체력: %d/%d\n", playerDTO.getHealth(), playerDTO.getMaxHealth());
-        System.out.printf("행동력: %d/%d\n", playerDTO.getEnergy(), playerDTO.getMaxEnergy());
+        System.out.printf("체력: %d/%d\n", player.getHp(), player.getMaxHp());
+        System.out.printf("행동력: %d/%d\n", player.getAp(), Constants.INITIAL_AP);
         
         System.out.println("=======================\n");
     }
