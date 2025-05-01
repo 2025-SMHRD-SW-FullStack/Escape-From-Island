@@ -55,22 +55,30 @@ public class ActionController {
             return false; // 행동력 부족
         }
 
-        // 행동력 소모
-        player.useAP(actionType.getApCost());
-
         // 행동 실행
+        boolean success = false;
         switch (actionType) {
             case EXPLORE:
                 explore(player);
-                return true;
+                success = true;
+                break;
             case CRAFT:
-                return craft(player);
+                success = craft(player);
+                break;
             case REST:
                 rest(player);
-                return true;
+                success = true;
+                break;
             default:
                 return false;
         }
+        
+        // 행동이 성공했을 때만 행동력 소모
+        if (success) {
+            player.useAP(actionType.getApCost());
+        }
+        
+        return success;
     }
 
     /**

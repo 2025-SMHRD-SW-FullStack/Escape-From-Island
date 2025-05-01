@@ -19,11 +19,7 @@ public class Main {
      * 메인 메소드
      */
     public static void main(String[] args) {
-        try {
-            // 시스템 인코딩 정보 출력 (디버깅용)
-            System.out.println("기본 인코딩: " + Charset.defaultCharset().displayName());
-            System.out.println("파일 인코딩: " + System.getProperty("file.encoding"));
-            
+        try {             
             // Windows 환경에서는 CP949(MS949) 인코딩 사용
             String osName = System.getProperty("os.name").toLowerCase();
             String encoding = osName.contains("win") ? "MS949" : "UTF-8";
@@ -31,8 +27,6 @@ public class Main {
             // 콘솔 출력 인코딩 설정
             System.setOut(new PrintStream(System.out, true, encoding));
             System.setErr(new PrintStream(System.err, true, encoding));
-
-            System.out.println("설정된 인코딩: " + encoding);
             
             // 시작 헤더 출력
             System.out.println(UIConstants.MENU_HEADER);

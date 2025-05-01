@@ -72,7 +72,6 @@ public class AudioManager {
             if (type == AudioType.BGM) {
                 // 배경음악은 파일 이름만 저장해두고 실제 재생 시 로드
                 bgmFileNames.put(audioId, fileName);
-                System.out.println("배경음악 등록: " + audioId + " (" + fileName + ")");
                 return true;
             } else {
                 // 효과음은 바로 로드하여 사용
@@ -194,8 +193,6 @@ public class AudioManager {
             
             // 현재 BGM ID 설정
             currentBgmId = audioId;
-            
-            System.out.println("[디버그] 배경음악 재생 쓰레드 시작: " + audioId);
             
             // 쓰레드 시작 메시지가 출력되도록 잠시 대기
             try {
