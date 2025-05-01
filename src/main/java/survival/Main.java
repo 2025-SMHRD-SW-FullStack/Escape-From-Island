@@ -20,13 +20,6 @@ public class Main {
      */
     public static void main(String[] args) {
         try {             
-            // Windows 환경에서는 CP949(MS949) 인코딩 사용
-            String osName = System.getProperty("os.name").toLowerCase();
-            String encoding = osName.contains("win") ? "MS949" : "UTF-8";
-            
-            // 콘솔 출력 인코딩 설정
-            System.setOut(new PrintStream(System.out, true, encoding));
-            System.setErr(new PrintStream(System.err, true, encoding));
             
             // 시작 헤더 출력
             System.out.println(UIConstants.MENU_HEADER);

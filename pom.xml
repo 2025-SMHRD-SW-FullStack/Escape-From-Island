@@ -11,8 +11,6 @@
     <properties>
         <maven.compiler.source>17</maven.compiler.source>
         <maven.compiler.target>17</maven.compiler.target>
-        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <main.class>survival.Main</main.class>
     </properties>
 
@@ -57,9 +55,6 @@
                     <mainClass>survival.Main</mainClass>
                     <mainJar>${project.build.finalName}.jar</mainJar>
                     <type>app-image</type>
-                    <javaOptions>
-                        <option>-Dfile.encoding=UTF-8</option>
-                    </javaOptions>
                     <winShortcut>true</winShortcut>
                     <winMenu>true</winMenu>
                     <winUpgradeUuid>YOUR-UNIQUE-UPGRADE-GUID</winUpgradeUuid>
