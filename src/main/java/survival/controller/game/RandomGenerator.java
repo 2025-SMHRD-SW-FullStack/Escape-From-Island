@@ -51,8 +51,8 @@ public class RandomGenerator {
      * 
      * @return 자원 이름
      */
-    public String getRandomResource() {
-        return getRandomResourceType().getLabel();
+    public ResourceType getRandomResource() {
+        return getRandomResourceType();
     }
 
     /**
@@ -86,11 +86,16 @@ public class RandomGenerator {
         }
 
         // 자원 획득 이벤트 (50%) → 누적 0.4 ~ 0.9
+        // 자원 중 랜덤으로 하나 가져와서 획득량 1~3개 중 랜덤으로
         else if (rd < DAMAGE_EVENT_CHANCE + RESOURCE_EVENT_CHANCE) {
+            // 랜덤 자원 1개
+            ResourceType resource = getRandomResourceType();
+            int amount = getRandomNumber(1, 3); // 1~3개 획득
+
             return new Event(
                     EventType.RESOURCE_GAIN,
-                    "주변에서 유용한 자원을 발견했습니다!",
-                    player -> player.getInventory());
+                    "주변에서 유용한 자원을 발견했습니다!" + resource.getLabel() + "를" + amount + "개 추가로 획득했습니다!",
+                    player -> player.getInventory().addResource(resource, amount));
         }
         // 회복 이벤트 (10%) → 나머지 (0.9 ~ 1.0)
         // special 이벤트는 일단 뺌
@@ -116,4 +121,6 @@ public class RandomGenerator {
         // min ~ max 까지의 랜덤 숫자 출력
         // return 0; // 임시 반환값
     }
+
+    
 }
