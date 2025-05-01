@@ -110,6 +110,46 @@
                     </execution>
                 </executions>
             </plugin>
+
+            <!-- Launch4j Maven 플러그인 -->
+            <plugin>
+                <groupId>com.akathist.maven.plugins.launch4j</groupId>
+                <artifactId>launch4j-maven-plugin</artifactId>
+                <version>2.3.2</version>
+                <executions>
+                    <execution>
+                        <id>l4j-gui</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>launch4j</goal>
+                        </goals>
+                        <configuration>
+                            <headerType>gui</headerType>
+                            <outfile>${project.build.directory}/SurvivalGame.exe</outfile>
+                            <jar>${project.build.directory}/${project.artifactId}-${project.version}.jar</jar>
+                            <errTitle>SurvivalGame</errTitle>
+                            <classPath>
+                                <mainClass>survival.Main</mainClass>
+                            </classPath>
+                            <jre>
+                                <path>jre</path>
+                                <minVersion>17</minVersion>
+                                <bundledJre64Bit>true</bundledJre64Bit>
+                            </jre>
+                            <versionInfo>
+                                <fileVersion>1.0.0.0</fileVersion>
+                                <txtFileVersion>1.0.0.0</txtFileVersion>
+                                <productVersion>1.0.0.0</productVersion>
+                                <txtProductVersion>1.0.0.0</txtProductVersion>
+                                <fileDescription>Survival Game</fileDescription>
+                                <productName>Survival Game</productName>
+                                <internalName>SurvivalGame</internalName>
+                                <originalFilename>SurvivalGame.exe</originalFilename>
+                            </versionInfo>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
         </plugins>
     </build>
 </project>
