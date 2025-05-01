@@ -1,7 +1,7 @@
 package survival.view;
 
-import survival.dto.GameEndDTO;
-import survival.dto.InventoryDTO;
+import survival.model.game.GameEndState;
+import survival.model.game.Inventory;
 import survival.model.game.Player;
 import survival.model.game.ResourceType;
 import survival.util.Constants;
@@ -108,16 +108,14 @@ public class ConsoleUI implements GameView {
     
     @Override
     public void displayEnding(boolean victory) {
-        GameEndDTO endDTO = new GameEndDTO(
-            victory,
-            victory ? "축하합니다! 구조되었습니다!" : "사망했습니다... 다음에 다시 도전하세요."
-        );
-        displayEnding(endDTO);
+        String message = victory ? "축하합니다! 구조되었습니다!" : "사망했습니다... 다음에 다시 도전하세요.";
+        GameEndState endState = victory ? GameEndState.VICTORY : GameEndState.DEATH;
+        displayEnding(endState);
     }
     
     @Override
-    public void displayEnding(GameEndDTO endDTO) {
-        if (endDTO == null) {
+    public void displayEnding(GameEndState endState) {
+        if (endState == null) {
             System.out.println("\n게임 종료 정보가 없습니다.");
             return;
         }
@@ -125,25 +123,25 @@ public class ConsoleUI implements GameView {
         System.out.println("\n===================================");
         System.out.println("          게임 종료");
         System.out.println("===================================");
-        System.out.println(endDTO.getMessage());
+        System.out.println(endState.getMessage());
         System.out.println("===================================\n");
     }
     
     @Override
-    public void displayInventory(InventoryDTO inventoryDTO) {
-        if (inventoryDTO == null) {
+    public void displayInventory(Inventory inventory) {
+        if (inventory == null) {
             System.out.println("인벤토리 정보가 없습니다.");
             return;
         }
         
         System.out.println("\n===== 인벤토리 =====");
-        Map<String, Integer> items = inventoryDTO.getItems();
+        Map<ResourceType, Integer> resources = inventory.getResources();
         
-        if (items.isEmpty()) {
+        if (resources.isEmpty()) {
             System.out.println("아이템 없음");
         } else {
-            for (Map.Entry<String, Integer> entry : items.entrySet()) {
-                System.out.printf("%s: %d개\n", entry.getKey(), entry.getValue());
+            for (Map.Entry<ResourceType, Integer> entry : resources.entrySet()) {
+                System.out.printf("%s: %d개\n", entry.getKey().getLabel(), entry.getValue());
             }
         }
         System.out.println("===================\n");
@@ -184,7 +182,7 @@ public class ConsoleUI implements GameView {
         System.err.println("===============\n");
     }
 
-	@Override // 4/30 3:57 최호철
+	@Override
 	public void showMessageNoln(String message) {
 		System.out.print(message);
 	}
