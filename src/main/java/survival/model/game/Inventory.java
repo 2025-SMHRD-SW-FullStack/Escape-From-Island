@@ -98,4 +98,21 @@ public class Inventory {
     public Map<ResourceType, Integer> getResources() {
         return this.resources;
     }
+    
+    /**
+     * 모든 자원 유형 보유 여부 확인
+     * 
+     * @return 모든 자원 유형 보유 여부
+     */
+    public boolean hasAllResourceTypes() {
+        // 모든 ResourceType 열거형 값 확인
+        for (ResourceType type : ResourceType.values()) {
+            // 해당 자원을 보유하고 있지 않으면 false 반환
+            if (resources.getOrDefault(type, 0) <= 0) {
+                return false;
+            }
+        }
+        // 모든 자원 유형을 보유하고 있으면 true 반환
+        return true;
+    }
 }

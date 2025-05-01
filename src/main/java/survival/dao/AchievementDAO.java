@@ -126,28 +126,31 @@ public class AchievementDAO {
 	 * 
 	 * @param userId    사용자 ID
 	 * @param condition 업적 조건
-	 * @return 업적 달성 여부
+	 * @return 아직 달성하지 않은 업적 ID, 없으면 -1
 	 */
-	public boolean checkAchievement(int userId, String condition) {
-		// Oracle 문법에 맞는 쿼리 형태 준비
+	public int checkAchievement(int userId, String condition) {
 		try {
-			String sql = "SELECT COUNT(*) FROM ACHIEVEMENTS a " +
-		             "WHERE a.condition = ? " +
-		             "AND NOT EXISTS (SELECT 1 FROM USER_ACHIEVEMENTS ua " +
-		             "                WHERE ua.achievement_id = a.achievement_id " +
-		             "                  AND ua.user_id = ?)";
-	        psmt = connection.prepareStatement(sql);
-	        psmt.setString(1, condition);
-	        psmt.setInt(2, userId);
-	        int result = psmt.executeUpdate();
-
-	        return result > 0; // 
-	    } catch (SQLException e) {
-	        
-	        e.printStackTrace();
-	        return false;
-	    } finally {
-	        
-	    }
+			// 특정 조건의 업적을 조회하되, 해당 사용자가 아직 획득하지 않은 업적만 조회
+			String sql = "SELECT a.achievement_id FROM ACHIEVEMENTS a " +
+						 "WHERE a.condition = ? " +
+						 "AND NOT EXISTS (SELECT 1 FROM USER_ACHIEVEMENTS ua " +
+						 "                WHERE ua.achievement_id = a.achievement_id " +
+						 "                  AND ua.user_id = ?)";
+			psmt = connection.prepareStatement(sql);
+			psmt.setString(1, condition);
+			psmt.setInt(2, userId);
+			rs = psmt.executeQuery();
+			
+			if (rs.next()) {
+				return rs.getInt("achievement_id");
+			}
+			
+			return -1; // 이미 달성했거나 존재하지 않는 업적
+		} catch (SQLException e) {
+			e.printStackTrace();
+			return -1;
+		} finally {
+			// 리소스 정리 코드 (필요시 추가)
+		}
 	}
 }

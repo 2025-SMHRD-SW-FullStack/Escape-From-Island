@@ -42,12 +42,25 @@ public class CraftingController {
      * 아이템 제작 처리
      * 
      * @param player   플레이어
-     * @param itemName 아이템 이름
      * @return 제작 성공 여부
      */
     public void craftItem(Player player) {
         Inventory inventory = player.getInventory();
         
+        // 제작에 필요한 자원 차감
+        Recipe raftRecipe = raft.getRecipe();
+        Map<ResourceType, Integer> requiredResources = raftRecipe.getResource();
+        
+        // 모든 자원 차감
+        for (Map.Entry<ResourceType, Integer> entry : requiredResources.entrySet()) {
+            ResourceType type = entry.getKey();
+            int requiredAmount = entry.getValue();
+            
+            // 자원 제거
+            inventory.removeResource(type, requiredAmount);
+        }
+        
+        // 뗏목 아이템 추가
         inventory.addItem(raft);
     }
 
@@ -65,11 +78,21 @@ public class CraftingController {
         Map<ResourceType, Integer> requiredResources = raftRecipe.getResource();
         
         // 모든 자원이 충분한지 확인
-        // 하나라도 부족한 자원이 있으면 false 반환
-        return !requiredResources.entrySet().stream()
-                .anyMatch(requirement -> 
-                    inventory.getResourceCount(requirement.getKey().toString()) < requirement.getValue()
-                );
+        for (Map.Entry<ResourceType, Integer> entry : requiredResources.entrySet()) {
+            ResourceType type = entry.getKey();
+            int requiredAmount = entry.getValue();
+            
+            // 현재 보유 자원 확인
+            int currentAmount = inventory.getResources().getOrDefault(type, 0);
+            
+            // 하나라도 부족하면 false 반환
+            if (currentAmount < requiredAmount) {
+                return false;
+            }
+        }
+        
+        // 모든 자원이 충족되면 true 반환
+        return true;
     }
 
 }

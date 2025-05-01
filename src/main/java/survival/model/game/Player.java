@@ -39,7 +39,7 @@ public class Player {
     public boolean useAP(int amount) {
         int tempAp = ap - amount;
 
-        if (tempAp > 0) {
+        if (tempAp >= 0) {
             ap = tempAp;
             return true;
         }

@@ -3,6 +3,7 @@ package survival.view;
 import survival.dto.GameEndDTO;
 import survival.dto.InventoryDTO;
 import survival.model.game.Player;
+import survival.model.game.ResourceType;
 import survival.util.Constants;
 
 import java.util.List;
@@ -14,7 +15,7 @@ import java.util.Scanner;
  */
 public class ConsoleUI implements GameView {
     // 필드
-    private Scanner scanner;
+    private  Scanner scanner;
     
     /**
      * 기본 생성자
@@ -83,6 +84,17 @@ public class ConsoleUI implements GameView {
         System.out.println("\n===== 플레이어 상태 =====");
         System.out.printf("체력: %d/%d\n", player.getHp(), player.getMaxHp());
         System.out.printf("행동력: %d/%d\n", player.getAp(), Constants.INITIAL_AP);
+        
+        // 자원 보유 현황 추가
+        System.out.println("\n===== 자원 보유 현황 =====");
+        Map<ResourceType, Integer> resources = player.getInventory().getResources();
+        if (resources.isEmpty()) {
+            System.out.println("보유한 자원이 없습니다.");
+        } else {
+            for (Map.Entry<ResourceType, Integer> entry : resources.entrySet()) {
+                System.out.printf("%s: %d개\n", entry.getKey().getLabel(), entry.getValue());
+            }
+        }
         
         System.out.println("=======================\n");
     }
