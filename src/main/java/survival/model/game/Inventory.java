@@ -8,15 +8,14 @@ import java.util.HashMap;
  */
 public class Inventory {
     // 필드
-    private Map<String, Integer> resources; // 자원 저장
-    private Map<String, Integer> items; // 아이템 저장
+    private Map<ResourceType, Integer> resources; // 자원 저장
+    private Item raft; // 아이템 저장
 
     /**
      * 기본 생성자
      */
     public Inventory() {
         resources = new HashMap<>();
-        items = new HashMap<>();
     }
 
     /**
@@ -25,7 +24,7 @@ public class Inventory {
      * @param name   자원 이름
      * @param amount 추가할 양
      */
-    public void addResource(String name, int amount) {
+    public void addResource(ResourceType name, int amount) {
         resources.put(name, resources.getOrDefault(name, 0) + amount);
     }
 
@@ -36,7 +35,7 @@ public class Inventory {
      * @param amount 제거할 양
      * @return 제거 성공 여부
      */
-    public boolean removeResource(String name, int amount) {
+    public boolean removeResource(ResourceType name, int amount) {
         if (resources.getOrDefault(name, 0) >= amount) {
             resources.replace(name, resources.get(name) - amount);
             return true;
@@ -49,23 +48,8 @@ public class Inventory {
      * 
      * @param name 아이템 이름
      */
-    public void addItem(String name) {
-        items.put(name, items.getOrDefault(name, 0) + 1);
-    }
-
-    /**
-     * 아이템 제거
-     * 
-     * @param name   아이템 이름
-     * @param amount 제거할 양
-     * @return 제거 성공 여부
-     */
-    public boolean removeItem(String name, int amount) {
-        if (items.getOrDefault(name, 0) >= amount) {
-            items.replace(name, items.get(name) - amount);
-            return true;
-        }
-        return false;
+    public void addItem(Item item) {
+        raft = item;
     }
 
     /**
@@ -95,17 +79,7 @@ public class Inventory {
         }
         return true;
     }
-
-    /**
-     * 특정 아이템 보유 여부 확인
-     * 
-     * @param name 아이템 이름
-     * @return 보유 여부
-     */
-    public boolean hasItem(String name) {
-        return items.getOrDefault(name, 0) > 0;
-    }
-
+    
     /**
      * 특정 자원 개수 확인
      * 
@@ -117,35 +91,11 @@ public class Inventory {
     }
 
     /**
-     * 특정 아이템 개수 확인
-     * 
-     * @param name 아이템 이름
-     * @return 보유 개수
-     */
-    public int getItemCount(String name) {
-        return items.getOrDefault(name, 0);
-    }
-
-    /**
      * 모든 자원 반환
      * 
      * @return 자원 맵
      */
-    public Map<String, Integer> getResources() {
+    public Map<ResourceType, Integer> getResources() {
         return this.resources;
-    }
-
-    /**
-     * 모든 아이템 반환
-     * 
-     * @return 아이템 맵
-     */
-    public Map<String, Integer> getItems() {
-        return this.items;
-    }
-
-    @Override
-    public String toString() {
-        return "Inventory";
     }
 }
