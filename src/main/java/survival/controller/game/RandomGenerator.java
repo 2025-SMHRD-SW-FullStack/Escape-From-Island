@@ -1,5 +1,8 @@
 package survival.controller.game;
 
+import static survival.util.Constants.MAX_RESOURCE_AMOUNT;
+import static survival.util.Constants.MIN_RESOURCE_AMOUNT;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -8,8 +11,8 @@ import java.util.Random;
 
 import survival.model.game.Event;
 import survival.model.game.EventType;
+import survival.model.game.GameEndState;
 import survival.model.game.ResourceType;
-import static survival.util.Constants.*;
 
 /**
  * 랜덤 이벤트 및 자원을 생성하는 클래스
@@ -17,6 +20,8 @@ import static survival.util.Constants.*;
 public class RandomGenerator {
     // 필드
     private Random random;
+    // 식인종, 배발견 하면 바로 게임종료
+    private GameEndState endState; 
 
     /**
      * 기본 생성자
@@ -24,8 +29,17 @@ public class RandomGenerator {
     public RandomGenerator() {
         this.random = new Random();
     }
+ 
+    public GameEndState getEndState() {
+		return endState;
+	}
 
-    /**
+	public void setEndState(GameEndState endState) {
+		this.endState = endState;
+	}
+
+
+	/**
      * 랜덤 자원 유형 반환
      * 
      * @return 자원 유형
@@ -58,55 +72,127 @@ public class RandomGenerator {
     /**
      * 이벤트 발생 여부 확인
      * 
-     * @return 이벤트 발생 여부
+     * @return 이벤트 타입 ( 자원 이벤트 or 특별 이벤트 )
      */
-    public boolean isEventTriggered() {
+    public EventType getTriggeredEventType() {
         // return false; // 임시 반환값
-        // EVENT_CHANCE : 0.3 으로 이벤트 발생 확률 설정
-        return random.nextDouble() < EVENT_CHANCE;
+    	double rd = random.nextDouble(); // 0.0 ~ 1.0
+    	
+    	if (rd < 0.3) {
+    		// 이벤트 유형 : 특별 이벤트 30%
+    		return EventType.SPECIAL;
+    	} else {
+    		// 이벤트 유형 :  자원 획득 이벤트 70%
+    		return EventType.RESOURCE_GAIN;
+    	}
     }
-
+    
     /**
-     * 랜덤 이벤트 생성
+     * 자원 획득 이벤트 생성
      * 
      * @return 이벤트 객체
      */
-    public Event generateRandomEvent() {
+    // 자원 타입과, 해당 자원의 갯수 매개변수로
+    public Event generateResourceGainEvent(ResourceType resource, int amount) {
+    	return new Event(
+			EventType.RESOURCE_GAIN,
+			resource.getLabel() + "를(을)" + amount + "개 획득했습니다!",
+			player -> player.getInventory().addResource(resource.getLabel(), amount)
+		);
+    }
+
+    /**
+     * 특별 이벤트 랜덤 생성
+     * 
+     * @return 이벤트 객체
+     */
+    public Event generateSpecialRandomEvent() {
         // return null; // 임시 반환값
-        double rd = random.nextDouble(); // 0.0 ~ 1.0
-
-        // 게임 이벤트 확률에 맞게 설정
-        // 피해 이벤트 (40%)
-        if (rd < DAMAGE_EVENT_CHANCE) {
-            return new Event(
-                    EventType.DAMAGE,
-                    "폭우로 인해 체력을 잃었습니다.",
-                    player -> player.updateHP(-10) // 체력 10 감소
-            );
-        }
-
-        // 자원 획득 이벤트 (50%) → 누적 0.4 ~ 0.9
-        // 자원 중 랜덤으로 하나 가져와서 획득량 1~3개 중 랜덤으로
-        else if (rd < DAMAGE_EVENT_CHANCE + RESOURCE_EVENT_CHANCE) {
-            // 랜덤 자원 1개
-            ResourceType resource = getRandomResourceType();
-            int amount = getRandomNumber(1, 3); // 1~3개 획득
-
-            return new Event(
-                    EventType.RESOURCE_GAIN,
-                    "주변에서 유용한 자원을 발견했습니다!" + resource.getLabel() + "를" + amount + "개 추가로 획득했습니다!",
-                    player -> player.getInventory().addResource(resource, amount));
-        }
-        // 회복 이벤트 (10%) → 나머지 (0.9 ~ 1.0)
-        // special 이벤트는 일단 뺌
-        else {
-            return new Event(
-                    EventType.HEAL,
-                    "휴식을 취하며 체력을 회복했습니다.",
-                    player -> player.updateHP(REST_HP_GAIN) // 체력 20 회복
-            );
-        }
-
+    	
+    	// 이벤트 유형에 맞게 이벤트 발생 상황 나누기
+    	// 자원 획득 이벤트일 때
+    	// 식인종, 배발견 ->  0.5%
+    	// 나머지 이벤트 -> 나머지 퍼센트 1/6로 나눠서 분배
+    	double chance = random.nextDouble() * 1000; // 0.0 ~ 999.999
+    	
+    	// 식인종 이벤트
+    	if (chance < 5) {
+    		Event event = new Event(
+    			EventType.SPECIAL,
+    			"식인종에게 잡혀버렸습니다... 사망 x.x ",
+    			player -> {} // 체력 조정 불필요
+			);
+    		event.setEndState(GameEndState.DEATH); // 게임 종료 상태 설정
+    		return event;	
+    		
+    	} else if(chance < 10) {
+    		// 배 발견
+    		Event event = new Event(
+    			EventType.SPECIAL,
+    			"배를 발견했습니다! 탈출에 성공! >ㅁ<",
+    			player -> {} 
+			);
+    		event.setEndState(GameEndState.VICTORY); // 게임 종료 상태 설정
+    		return event;
+    	} else {
+    		// 나머지 6가지 : 990개 중 각 165씩 할당
+    		double subChance = (chance - 10) / 165;
+    		int randomEvent = (int) subChance; // 0~5로 구분
+    		int hpChance = getRandomNumber(5, 10);
+    		
+    		switch (randomEvent) {
+    		case 0:
+    			return new Event(
+					EventType.SPECIAL,
+					"야생동물에게 공격당했습니다!",
+					player -> player.updateHP(-hpChance)
+				);
+    		case 1:
+    			return new Event(
+					EventType.SPECIAL,
+					"산사태가 발생했습니다!",
+					player -> {
+						player.updateHP(-hpChance);
+						player.useAP(1);
+					}
+				);
+    		case 2:
+    			return new Event(
+					EventType.SPECIAL,
+					"폭염으로 지쳤습니다...",
+					player -> {
+						player.updateHP(-hpChance);
+						player.useAP(1);
+					}
+				);
+    		case 3:
+    			return new Event(
+					EventType.SPECIAL,
+					"폭우로 인해 체력이 떨어졌습니다.",
+					player -> {
+						player.updateHP(-hpChance);
+						player.useAP(1);
+					}
+				);
+    		case 4:
+    			return new Event(
+					EventType.SPECIAL,
+					"길을 잃어 에너지를 소비했습니다.",
+					player -> player.useAP(1)
+				);
+    		case 5:
+    			return new Event(
+					EventType.SPECIAL,
+					"산딸기를 발견했습니다!",
+					player -> {
+						player.updateHP(hpChance);
+						player.addAP(1);
+					}
+				);
+    		}
+    	
+    	}
+    	throw new IllegalStateException("정의되지 않은 이벤트입니다.");
     }
 
     /**
