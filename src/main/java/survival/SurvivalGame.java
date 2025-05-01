@@ -73,11 +73,14 @@ public class SurvivalGame {
                     // 비밀번호 입력
                     view.showMessageNoln(UIConstants.Login_PW);
                     String pw = view.getStringInput();
+
+                    // 로그인 처리
                     boolean isSuccess = gameController.handleLogin(id, pw);
                     if (!isSuccess) {
                         view.showMessage(UIConstants.LOGIN_FAIL);
                         break;
                     }
+                    
                     view.showMessage(UIConstants.LOGIN_SUCCESS);
 
                     boolean shouldLoop = true;
