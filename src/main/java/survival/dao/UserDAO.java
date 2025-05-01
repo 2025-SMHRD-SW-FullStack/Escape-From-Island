@@ -24,6 +24,31 @@ public class UserDAO {
     }
     
     /**
+     * 사용자명이 이미 존재하는지 확인
+     * @param username 확인할 사용자명
+     * @return 존재 여부 (true: 존재함, false: 존재하지 않음)
+     */
+    public boolean checkUserExists(String username) {
+        boolean exists = false;
+        try {
+            String sql = "SELECT COUNT(*) FROM USERS WHERE USERNAME = ?";
+            psmt = connection.prepareStatement(sql);
+            psmt.setString(1, username);
+            
+            rs = psmt.executeQuery();
+            
+            if (rs.next()) {
+                exists = rs.getInt(1) > 0;
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            // 리소스는 close하지 않음 (connection은 계속 사용)
+        }
+        return exists;
+    }
+    
+    /**
      * 사용자 등록
      * @param username 사용자명
      * @param password 비밀번호

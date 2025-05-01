@@ -4,25 +4,56 @@ import survival.view.ConsoleUI;
 import survival.view.GameView;
 import survival.view.UIConstants;
 
+import java.io.PrintStream;
+import java.nio.charset.Charset;
+
 /**
  * 애플리케이션 진입점 클래스
  */
 public class Main {
+    
+    // 게임 객체
+    private static SurvivalGame game;
+    
     /**
      * 메인 메소드
      */
     public static void main(String[] args) {
-        // 시작 헤더 출력
-        System.out.println(UIConstants.MENU_HEADER);
-        
-        // UI 생성
-        GameView view = new ConsoleUI();
-        
-        // 게임 객체 생성 및 실행
-        SurvivalGame game = new SurvivalGame(view);
-        game.run();
-        
-        // 리소스 정리
-        game.cleanup();
+        try {
+            // 시스템 인코딩 정보 출력 (디버깅용)
+            System.out.println("기본 인코딩: " + Charset.defaultCharset().displayName());
+            System.out.println("파일 인코딩: " + System.getProperty("file.encoding"));
+            
+            // Windows 환경에서는 CP949(MS949) 인코딩 사용
+            String osName = System.getProperty("os.name").toLowerCase();
+            String encoding = osName.contains("win") ? "MS949" : "UTF-8";
+            
+            // 콘솔 출력 인코딩 설정
+            System.setOut(new PrintStream(System.out, true, encoding));
+            System.setErr(new PrintStream(System.err, true, encoding));
+
+            System.out.println("설정된 인코딩: " + encoding);
+            
+            // 시작 헤더 출력
+            System.out.println(UIConstants.MENU_HEADER);
+            
+            // UI 생성
+            GameView view = new ConsoleUI();
+            
+            // 게임 객체 생성 및 실행
+            game = new SurvivalGame(view);
+            game.run();
+            
+            // 프로그램 종료 시 리소스 정리
+            Runtime.getRuntime().addShutdownHook(new Thread(() -> {
+                if (game != null) {
+                    game.cleanup();
+                }
+            }));
+            
+        } catch (Exception e) {
+            // 에러 스트림에 스택 트레이스 출력
+            e.printStackTrace();
+        }
     }
 } 

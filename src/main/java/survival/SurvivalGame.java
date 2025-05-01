@@ -2,6 +2,8 @@ package survival;
 
 import survival.controller.game.GameController;
 import survival.dao.DatabaseManager;
+import survival.util.AudioManager;
+import survival.util.AudioManager.AudioType;
 import survival.view.GameView;
 import survival.view.UIConstants;
 
@@ -13,6 +15,7 @@ public class SurvivalGame {
     private GameController gameController;
     private GameView view;
     private boolean initialized;
+    private AudioManager audioManager;
 
     /**
      * 생성자
@@ -23,6 +26,22 @@ public class SurvivalGame {
         this.view = view;
         this.gameController = new GameController(view);
         this.initialized = false;
+        this.audioManager = AudioManager.getInstance();
+        
+        // 오디오 파일 로드
+        initializeAudio();
+    }
+
+    /**
+     * 오디오 시스템 초기화
+     */
+    private void initializeAudio() {
+        
+        audioManager.loadAudio(AudioManager.BGM_MENU, "menu_bgm.wav", AudioType.BGM);
+        audioManager.loadAudio(AudioManager.BGM_GAME, "game_bgm.wav", AudioType.BGM);
+        audioManager.loadAudio(AudioManager.BGM_VICTORY, "victory_bgm.wav", AudioType.BGM);
+        audioManager.loadAudio(AudioManager.BGM_DEFEAT, "defeat_bgm.wav", AudioType.BGM);
+    
     }
 
     /**
@@ -82,6 +101,8 @@ public class SurvivalGame {
                     }
                     
                     view.showMessage(UIConstants.LOGIN_SUCCESS);
+                    // 로그인 성공 시 메뉴 배경음악 재생
+                    audioManager.playBgm(AudioManager.BGM_MENU);
 
                     boolean shouldLoop = true;
                     while (shouldLoop) {
@@ -89,7 +110,11 @@ public class SurvivalGame {
                         int choice2 = view.getIntInput(1, 3);
                         switch (choice2) {
                             case 1:
+                                // 게임 시작 시 게임 배경음악으로 변경
+                                audioManager.playBgm(AudioManager.BGM_GAME);
                                 gameController.startGame();
+                                // 게임 종료 후에는 승리/패배 BGM이 이미 재생 중이므로 
+                                // 메뉴 음악은 사용자가 엔터 키를 눌러 메뉴로 돌아올 때 자동 재생
                                 break;
                             case 2:
                                 gameController.processAchievements();
@@ -137,6 +162,12 @@ public class SurvivalGame {
      * 게임 종료 시 리소스 정리
      */
     public void cleanup() {
+        // 배경음악 중지 및 리소스 해제
+        if (audioManager != null) {
+            audioManager.stopCurrentBgm();
+            audioManager.dispose();
+        }
+        
         // 데이터베이스 연결 종료
         DatabaseManager.getInstance().closeConnection();
     }

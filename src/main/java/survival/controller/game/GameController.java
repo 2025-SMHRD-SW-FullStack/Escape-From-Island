@@ -8,6 +8,7 @@ import survival.model.user.User;
 import survival.model.game.ActionType;
 import survival.controller.user.AuthController;
 import survival.controller.user.AchievementController;
+import survival.util.AudioManager;
 import survival.util.Constants;
 import survival.view.GameView;
 
@@ -23,6 +24,7 @@ public class GameController {
     private GameView view;
     private AuthController authController;
     private AchievementController achievementController;
+    private AudioManager audioManager;
 
     /**
      * 생성자
@@ -34,6 +36,7 @@ public class GameController {
         this.actionController = new ActionController(view);
         this.achievementController = new AchievementController();
         this.authController = new AuthController();
+        this.audioManager = AudioManager.getInstance();
     }
 
     /**
@@ -80,14 +83,20 @@ public class GameController {
      * @return 로그인 성공 여부
      */
     public boolean handleLogin(String id, String pw) {
-        boolean success = authController.login(id, pw);
+        try {
+            boolean success = authController.login(id, pw);
 
-        if (success) {
-            User user = authController.getCurrentUser();
-            achievementController.setCurrentUser(user);
+            if (success) {
+                User user = authController.getCurrentUser();
+                achievementController.setCurrentUser(user);
+            }
+
+            return success;
+        } catch (IllegalArgumentException e) {
+            // 존재하지 않는 계정 또는 비밀번호 불일치 예외 처리
+            view.displayError(e.getMessage());
+            return false;
         }
-
-        return success;
     }
 
     /**
@@ -96,12 +105,14 @@ public class GameController {
      * @return 회원가입 성공 여부
      */
     public boolean handleRegistration(String id, String pw) {
-
-        boolean membership = authController.register(id, pw);
-        if (membership) {
-            return true;
+        try {
+            boolean membership = authController.register(id, pw);
+            return membership;
+        } catch (IllegalArgumentException e) {
+            // 이미 존재하는 사용자명 예외 처리
+            view.displayError(e.getMessage());
+            return false;
         }
-        return false;
     }
 
     /**
@@ -277,14 +288,20 @@ public class GameController {
         GameEndState endState;
         if (isSuccess) {
             endState = GameEndState.VICTORY;
+            // 승리 배경음악 재생
+            audioManager.playBgm(AudioManager.BGM_VICTORY);
         } else {
             // 실패 원인 파악 (시간 초과 또는 사망)
             if (gameState != null && gameState.getPlayer().getHp() > 0 && gameState.getDay() >= Constants.DAYS_TO_ESCAPE) {
                 // 시간 초과로 인한 실패도 DEATH 상태로 처리
                 endState = GameEndState.DEATH;
+                // 패배 배경음악 재생
+                audioManager.playBgm(AudioManager.BGM_DEFEAT);
             } else {
                 // 사망으로 인한 실패
                 endState = GameEndState.DEATH;
+                // 패배 배경음악 재생
+                audioManager.playBgm(AudioManager.BGM_DEFEAT);
             }
         }
         
