@@ -9,6 +9,8 @@ public class Player {
     private int maxHp;
     private int ap;
     private Inventory inventory;
+    
+    private GameState gameState;
 
     public Player(int hp, int maxHp, int ap, Inventory inventory) {
         this.hp = hp;
@@ -16,8 +18,19 @@ public class Player {
         this.ap = ap;
         this.inventory = inventory;
     }
+    
+    
 
-    /**
+    public GameState getGameState() {
+		return gameState;
+	}
+
+	public void setGameState(GameState gameState) {
+		this.gameState = gameState;
+	}
+	
+
+	/**
      * 행동력 사용 (양수: 소모, 음수: 충당)
      * 
      * @param amount 사용할 행동력

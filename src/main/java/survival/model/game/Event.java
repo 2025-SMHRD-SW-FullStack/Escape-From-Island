@@ -11,6 +11,9 @@ public class Event {
     private String description;
     private Consumer<Player> effect;
     
+    // 게임 종료 상태 필드 추가 <- 식인족, 배 발견 이벤트 때문에
+    private GameEndState endState;
+    
     /**
      * 생성자
      * @param type 이벤트 타입
@@ -21,8 +24,9 @@ public class Event {
         this.type = type;
         this.description = description;
         this.effect = effect;
+        this.endState = null; // 기본값은 null (게임 종료 없음)
     }
-    
+
     /**
      * 이벤트 효과 실행
      * @param player 대상 플레이어
@@ -47,4 +51,16 @@ public class Event {
     public String getDescription() {
         return description;
     }
+
+    /**
+     * 게임 종료 상태 반환
+     * @return 이벤트 게임 종료 상태(식인종, 배 발견 시 적용)
+     */
+    public GameEndState getEndState() {
+		return endState;
+	}
+
+	public void setEndState(GameEndState endState) {
+		this.endState = endState;
+	}
 } 
