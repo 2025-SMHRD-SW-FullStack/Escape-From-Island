@@ -1,5 +1,6 @@
 package survival;
 
+import ascii.AsciiArt;
 import survival.controller.game.GameController;
 import survival.dao.DatabaseManager;
 import survival.util.AudioManager;
@@ -71,7 +72,7 @@ public class SurvivalGame {
         if (!initialized && !initialize()) {
             return;
         }
-
+         
         // 시작 메시지 출력
         view.showMessage("무인도에 불시착한 당신! 생존을 위한 도전이 시작됩니다!");
         view.showMessage("================================");

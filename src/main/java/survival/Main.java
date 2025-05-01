@@ -7,6 +7,8 @@ import survival.view.UIConstants;
 import java.io.PrintStream;
 import java.nio.charset.Charset;
 
+import ascii.AsciiArt;
+
 /**
  * 애플리케이션 진입점 클래스
  */
@@ -19,9 +21,14 @@ public class Main {
      * 메인 메소드
      */
     public static void main(String[] args) {
-        try {             
+    	
+    	
+        try {         
+        	
+
             
             // 시작 헤더 출력
+        	System.out.println(AsciiArt.asciiMain); 
             System.out.println(UIConstants.MENU_HEADER);
             
             // UI 생성

@@ -1,0 +1,165 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+         
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>escape-from-island</groupId>
+    <artifactId>escape-from-island</artifactId>
+    <version>1.0.0</version>
+
+    <properties>
+        <maven.compiler.source>17</maven.compiler.source>
+        <maven.compiler.target>17</maven.compiler.target>
+        <main.class>survival.Main</main.class>
+    </properties>
+
+    <dependencies>
+        <!-- Oracle JDBC 드라이버 -->
+        <dependency>
+            <groupId>com.oracle.database.jdbc</groupId>
+            <artifactId>ojdbc6</artifactId>
+            <version>11.2.0.4</version>
+        </dependency>
+    </dependencies>
+    
+
+    <build>
+        <resources>
+            <resource>
+                <directory>src/main/resources</directory>
+            </resource>
+        </resources>
+        <plugins>
+            <!-- Maven Compiler 플러그인 -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>3.8.1</version>
+                <configuration>
+                    <source>14</source>
+                    <target>14</target>
+                </configuration>
+            </plugin>
+			<plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-compiler-plugin</artifactId>
+            <version>3.8.1</version>
+            <configuration>
+                <encoding>UTF-8</encoding>
+                <source>1.8</source> <!-- 또는 11, 17 등 사용 중인 Java 버전에 맞춰 변경 -->
+                <target>1.8</target>
+            </configuration>
+        </plugin>
+
+            <!-- JPackage Maven 플러그인 (EXE 빌드용) -->
+            <plugin>
+    <groupId>org.panteleyev</groupId>
+    <artifactId>jpackage-maven-plugin</artifactId>
+    <version>1.5.1</version>
+    <configuration>
+        <n>무인도탈출</n>
+        <appVersion>${project.version}</appVersion>
+        <vendor>YourName</vendor>
+        <destination>target/dist</destination>
+        <input>${project.build.directory}</input>
+        <mainClass>survival.Main</mainClass>
+        <mainJar>${project.build.finalName}.jar</mainJar>
+        <image-type>JIMAGE</image-type> <!-- 수정된 부분 -->
+        <winShortcut>true</winShortcut>
+        <winMenu>true</winMenu>
+        <winUpgradeUuid>123e4567-e89b-12d3-a456-426614174000</winUpgradeUuid>
+
+    </configuration>
+    <executions>
+        <execution>
+            <id>jpackage</id>
+            <phase>package</phase>
+            <goals>
+                <goal>jpackage</goal>
+            </goals>
+        </execution>
+    </executions>
+</plugin>
+
+            
+            <!-- Maven JAR 플러그인 (메인 클래스 지정) -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-jar-plugin</artifactId>
+                <version>3.2.0</version>
+                <configuration>
+                    <archive>
+                        <manifest>
+                            <mainClass>survival.Main</mainClass>
+                        </manifest>
+                    </archive>
+                </configuration>
+            </plugin>
+            
+            <!-- Maven Shade 플러그인 (모든 의존성을 포함한 실행 가능한 JAR 생성) -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-shade-plugin</artifactId>
+                <version>3.2.4</version>
+                <executions>
+                    <execution>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>shade</goal>
+                        </goals>
+                        <configuration>
+                            <transformers>
+                                <transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
+                                    <mainClass>${main.class}</mainClass>
+                                </transformer>
+                            </transformers>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <!-- Launch4j Maven 플러그인 -->
+            <plugin>
+                <groupId>com.akathist.maven.plugins.launch4j</groupId>
+                <artifactId>launch4j-maven-plugin</artifactId>
+                <version>2.3.2</version>
+                <executions>
+                    <execution>
+                        <id>l4j-gui</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>launch4j</goal>
+                        </goals>
+                        <configuration>
+                            <headerType>gui</headerType>
+                            <outfile>${project.build.directory}/SurvivalGame.exe</outfile>
+                            <jar>${project.build.directory}/${project.artifactId}-${project.version}.jar</jar>
+                            <errTitle>SurvivalGame</errTitle>
+                            <classPath>
+                                <mainClass>survival.Main</mainClass>
+                            </classPath>
+                            <jre>
+                                <path>jre</path>
+                                <minVersion>17</minVersion>
+                                <bundledJre64Bit>true</bundledJre64Bit>
+                            </jre>
+                            <versionInfo>
+                                <fileVersion>1.0.0.0</fileVersion>
+                                <txtFileVersion>1.0.0.0</txtFileVersion>
+                                <productVersion>1.0.0.0</productVersion>
+                                <txtProductVersion>1.0.0.0</txtProductVersion>
+                                <fileDescription>Survival Game</fileDescription>
+                                <productName>Survival Game</productName>
+                                <internalName>SurvivalGame</internalName>
+                                <originalFilename>SurvivalGame.exe</originalFilename>
+                            </versionInfo>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
+    
+</project>

@@ -9,6 +9,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Random;
 
+import ascii.AsciiArt;
 import survival.model.game.Event;
 import survival.model.game.EventType;
 import survival.model.game.GameEndState;
@@ -111,6 +112,7 @@ public class RandomGenerator {
 
         // 식인종 이벤트 - 3% 확률
         if (chance < 3) {
+        	System.out.println(AsciiArt.asciiDie);
             Event event = new Event(
                     EventType.SPECIAL,
                     "식인종에게 잡혀버렸습니다... 게임 오버!",
@@ -121,6 +123,7 @@ public class RandomGenerator {
         }
         // 배 발견 - 2% 확률
         else if (chance < 5) {
+        	System.out.println(AsciiArt.asciiShip);
             Event event = new Event(
                     EventType.SPECIAL,
                     "배를 발견했습니다! 탈출에 성공했습니다!",
@@ -137,11 +140,13 @@ public class RandomGenerator {
 
             switch (randomEvent) {
                 case 0:
+                	System.out.println(AsciiArt.asciiKuma);
                     return new Event(
                             EventType.SPECIAL,
                             "야생동물에게 공격당했습니다!",
                             player -> player.updateHP(-hpChance));
                 case 1:
+                	System.out.println(AsciiArt.asciiStone);
                     return new Event(
                             EventType.SPECIAL,
                             "산사태가 발생했습니다!",
@@ -150,6 +155,7 @@ public class RandomGenerator {
                                 player.useAP(1);
                             });
                 case 2:
+                	System.out.println(AsciiArt.asciiSun);
                     return new Event(
                             EventType.SPECIAL,
                             "폭염으로 지쳤습니다...",
@@ -158,6 +164,7 @@ public class RandomGenerator {
                                 player.useAP(1);
                             });
                 case 3:
+                	System.out.println(AsciiArt.asciiRain);
                     return new Event(
                             EventType.SPECIAL,
                             "폭우로 인해 체력이 떨어졌습니다.",
@@ -166,12 +173,14 @@ public class RandomGenerator {
                                 player.useAP(1);
                             });
                 case 4:
+                	System.out.println(AsciiArt.asciiLose);
                     return new Event(
                             EventType.SPECIAL,
                             "길을 잃어 에너지를 소비했습니다.",
                             player -> player.useAP(1));
                 case 5:
                 default:
+                	System.out.println(AsciiArt.asciiBerry);
                     return new Event(
                             EventType.SPECIAL,
                             "산딸기를 발견했습니다!",

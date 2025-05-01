@@ -15,13 +15,60 @@
         <artifactId>maven-compiler-plugin</artifactId>
         <version>3.8.1</version>
         <configuration>
-          <source>${maven.compiler.source}</source>
-          <target>${maven.compiler.target}</target>
+          <source>14</source>
+          <target>14</target>
+        </configuration>
+      </plugin>
+      <plugin>
+        <artifactId>maven-compiler-plugin</artifactId>
+        <version>3.8.1</version>
+        <configuration>
+          <encoding>UTF-8</encoding>
+          <source>1.8</source>
+          <target>1.8</target>
+        </configuration>
+      </plugin>
+      <plugin>
+        <groupId>org.panteleyev</groupId>
+        <artifactId>jpackage-maven-plugin</artifactId>
+        <version>1.5.1</version>
+        <executions>
+          <execution>
+            <id>jpackage</id>
+            <phase>package</phase>
+            <goals>
+              <goal>jpackage</goal>
+            </goals>
+          </execution>
+        </executions>
+        <configuration>
+          <n>무인도탈출</n>
+          <appVersion>${project.version}</appVersion>
+          <vendor>YourName</vendor>
+          <destination>target/dist</destination>
+          <input>${project.build.directory}</input>
+          <mainClass>survival.Main</mainClass>
+          <mainJar>${project.build.finalName}.jar</mainJar>
+          <image-type>JIMAGE</image-type>
+          <winShortcut>true</winShortcut>
+          <winMenu>true</winMenu>
+          <winUpgradeUuid>123e4567-e89b-12d3-a456-426614174000</winUpgradeUuid>
+        </configuration>
+      </plugin>
+      <plugin>
+        <artifactId>maven-jar-plugin</artifactId>
+        <version>3.2.0</version>
+        <configuration>
+          <archive>
+            <manifest>
+              <mainClass>survival.Main</mainClass>
+            </manifest>
+          </archive>
         </configuration>
       </plugin>
       <plugin>
         <artifactId>maven-shade-plugin</artifactId>
-        <version>3.4.1</version>
+        <version>3.2.4</version>
         <executions>
           <execution>
             <phase>package</phase>
@@ -39,22 +86,42 @@
         </executions>
       </plugin>
       <plugin>
-        <groupId>org.panteleyev</groupId>
-        <artifactId>jpackage-maven-plugin</artifactId>
-        <version>1.6.0</version>
-        <configuration>
-          <name>SurvivalGame</name>
-          <appVersion>1.0.0</appVersion>
-          <vendor>YourCompany</vendor>
-          <destination>${project.build.directory}/dist</destination>
-          <module>survival</module>
-          <mainClass>survival.Main</mainClass>
-          <runtimeImage>${java.home}</runtimeImage>
-          <type>APP_IMAGE</type>
-          <winShortcut>true</winShortcut>
-          <winMenu>true</winMenu>
-          <icon>src/main/resources/images/icon.ico</icon>
-        </configuration>
+        <groupId>com.akathist.maven.plugins.launch4j</groupId>
+        <artifactId>launch4j-maven-plugin</artifactId>
+        <version>2.3.2</version>
+        <executions>
+          <execution>
+            <id>l4j-gui</id>
+            <phase>package</phase>
+            <goals>
+              <goal>launch4j</goal>
+            </goals>
+            <configuration>
+              <headerType>gui</headerType>
+              <outfile>${project.build.directory}/SurvivalGame.exe</outfile>
+              <jar>${project.build.directory}/${project.artifactId}-${project.version}.jar</jar>
+              <errTitle>SurvivalGame</errTitle>
+              <classPath>
+                <mainClass>survival.Main</mainClass>
+              </classPath>
+              <jre>
+                <path>jre</path>
+                <minVersion>17</minVersion>
+                <bundledJre64Bit>true</bundledJre64Bit>
+              </jre>
+              <versionInfo>
+                <fileVersion>1.0.0.0</fileVersion>
+                <txtFileVersion>1.0.0.0</txtFileVersion>
+                <productVersion>1.0.0.0</productVersion>
+                <txtProductVersion>1.0.0.0</txtProductVersion>
+                <fileDescription>Survival Game</fileDescription>
+                <productName>Survival Game</productName>
+                <internalName>SurvivalGame</internalName>
+                <originalFilename>SurvivalGame.exe</originalFilename>
+              </versionInfo>
+            </configuration>
+          </execution>
+        </executions>
       </plugin>
     </plugins>
   </build>

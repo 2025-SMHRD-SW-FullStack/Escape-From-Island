@@ -2,6 +2,7 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0"
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+         
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>escape-from-island</groupId>
@@ -22,6 +23,7 @@
             <version>11.2.0.4</version>
         </dependency>
     </dependencies>
+    
 
     <build>
         <resources>
@@ -36,39 +38,51 @@
                 <artifactId>maven-compiler-plugin</artifactId>
                 <version>3.8.1</version>
                 <configuration>
-                    <source>${maven.compiler.source}</source>
-                    <target>${maven.compiler.target}</target>
+                    <source>14</source>
+                    <target>14</target>
                 </configuration>
             </plugin>
+			<plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-compiler-plugin</artifactId>
+            <version>3.8.1</version>
+            <configuration>
+                <encoding>UTF-8</encoding>
+                <source>1.8</source> <!-- 또는 11, 17 등 사용 중인 Java 버전에 맞춰 변경 -->
+                <target>1.8</target>
+            </configuration>
+        </plugin>
 
             <!-- JPackage Maven 플러그인 (EXE 빌드용) -->
             <plugin>
-                <groupId>org.panteleyev</groupId>
-                <artifactId>jpackage-maven-plugin</artifactId>
-                <version>1.4.0</version>
-                <configuration>
-                    <n>무인도탈출</n>
-                    <appVersion>${project.version}</appVersion>
-                    <vendor>YourName</vendor>
-                    <destination>target/dist</destination>
-                    <input>${project.build.directory}</input>
-                    <mainClass>survival.Main</mainClass>
-                    <mainJar>${project.build.finalName}.jar</mainJar>
-                    <type>app-image</type>
-                    <winShortcut>true</winShortcut>
-                    <winMenu>true</winMenu>
-                    <winUpgradeUuid>YOUR-UNIQUE-UPGRADE-GUID</winUpgradeUuid>
-                </configuration>
-                <executions>
-                    <execution>
-                        <id>jpackage</id>
-                        <phase>package</phase>
-                        <goals>
-                            <goal>jpackage</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>
+    <groupId>org.panteleyev</groupId>
+    <artifactId>jpackage-maven-plugin</artifactId>
+    <version>1.5.1</version>
+    <configuration>
+        <n>무인도탈출</n>
+        <appVersion>${project.version}</appVersion>
+        <vendor>YourName</vendor>
+        <destination>target/dist</destination>
+        <input>${project.build.directory}</input>
+        <mainClass>survival.Main</mainClass>
+        <mainJar>${project.build.finalName}.jar</mainJar>
+        <image-type>JIMAGE</image-type> <!-- 수정된 부분 -->
+        <winShortcut>true</winShortcut>
+        <winMenu>true</winMenu>
+        <winUpgradeUuid>123e4567-e89b-12d3-a456-426614174000</winUpgradeUuid>
+
+    </configuration>
+    <executions>
+        <execution>
+            <id>jpackage</id>
+            <phase>package</phase>
+            <goals>
+                <goal>jpackage</goal>
+            </goals>
+        </execution>
+    </executions>
+</plugin>
+
             
             <!-- Maven JAR 플러그인 (메인 클래스 지정) -->
             <plugin>
@@ -78,7 +92,7 @@
                 <configuration>
                     <archive>
                         <manifest>
-                            <mainClass>${main.class}</mainClass>
+                            <mainClass>survival.Main</mainClass>
                         </manifest>
                     </archive>
                 </configuration>
@@ -147,4 +161,5 @@
             </plugin>
         </plugins>
     </build>
+    
 </project>
