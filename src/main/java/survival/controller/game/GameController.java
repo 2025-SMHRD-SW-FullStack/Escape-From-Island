@@ -45,7 +45,7 @@ public class GameController {
      */
     public void startGame() {
         // 게임 상태 초기화
-        Player player = new Player(Constants.INITIAL_HP, Constants.INITIAL_HP, Constants.INITIAL_AP, new Inventory());
+        Player player = new Player(100, 100, Constants.INITIAL_AP, new Inventory());
 
         gameState = new GameState(Constants.INITIAL_DAY, player, false, false, null);
         processGame();
@@ -80,54 +80,12 @@ public class GameController {
     public void endDay() {
         // 메소드 구현 부분
 
-        if (checkVictory()) {
-            // 종료 메시지 전달
-            GameEndDTO endDTO = new GameEndDTO(
-                    gameState.isVictory(),
-                    gameState.getEndState().getMessage());
-            view.displayEnding(endDTO);
-            return;
-        }
-
         // 다음 날로 넘어가기
         gameState.nextDay(); // 일차 +1 , 여기에 AP도 자동으로 추가됨
         view.showMessage("다음 날로 넘어갑니다. 행동력이 회복되었습니다!");
 
         // 다음 날 진행
         processDay();
-    }
-
-    /**
-     * 승리 조건 확인
-     * 
-     * @return 승리 여부
-     */
-    public boolean checkVictory() {
-        // return false; // 임시 반환값
-        if (gameState == null)
-            return false;
-
-        // 현재 날짜와 플레이어의 체력 가져와서 종료, 승리 조건 체크
-        int currentDay = gameState.getDay();
-        int currentHP = gameState.getPlayer().getHp();
-
-        // 게임 종료 조건 확인
-        if (currentDay >= DAYS_TO_ESCAPE) {
-            if (currentHP <= GAME_OVER_HP) {
-                // 체력이 0 이하 -> 사망
-                gameState.endGame(GameEndState.DEATH);
-            } else if (gameState.getPlayer().getInventory().hasItem(RAFT_ITEM_NAME)) {
-                // 뗏목 아이템 보유 -> 탈출 성공
-                gameState.endGame(GameEndState.VICTORY);
-            } else {
-                // 강제 종료
-                gameState.endGame(GameEndState.GIVE_UP);
-            }
-
-            return true; // 종료
-
-        }
-        return false;
     }
 
     /**
@@ -178,24 +136,38 @@ public class GameController {
         int choice = view.getIntInput(1, 3);
 
         // 선택한 행동 처리
-        boolean result = false;
-        switch (choice) {
-            case 1: // 탐험
-                result = handleAction(ActionType.EXPLORE, null);
+        boolean isDone = false;
+
+        boolean isDayOver = gameState.getDay() <= Constants.DAYS_TO_ESCAPE;
+
+        while (isDayOver) {
+            int currentAP = gameState.getPlayer().getAp();
+
+            if (currentAP <= 0) {
+                view.showMessage("행동력이 부족합니다.");
                 break;
-            case 2: // 제작
-                // 제작할 아이템 선택 로직
-                result = handleAction(ActionType.CRAFT, "임시아이템");
-                break;
-            case 3: // 휴식
-                result = handleAction(ActionType.REST, null);
-                break;
+            }
+
+            switch (choice) {
+                case 1: // 탐험
+                    isDone = handleAction(ActionType.EXPLORE);
+                    break;
+                case 2: // 제작
+                    isDone = handleAction(ActionType.CRAFT);
+                    break;
+                case 3: // 휴식
+                    isDone = handleAction(ActionType.REST);
+                    break;
+            }
+
+            // 결과 처리
+            if (!isDone) {
+                view.showMessage("행동력이 부족합니다.");
+            }
+
+            endDay();
         }
 
-        // 결과 처리
-        if (!result) {
-            view.showMessage("행동력이 부족합니다.");
-        }
     }
 
     /**
@@ -205,27 +177,12 @@ public class GameController {
      * @param itemName   아이템 이름 (제작 시)
      * @return 처리 결과
      */
-    private boolean handleAction(ActionType actionType, String itemName) {
+    private boolean handleAction(ActionType actionType) {
         if (actionController == null || gameState == null) {
             return false;
         }
 
-        boolean result = actionController.performAction(gameState.getPlayer(), actionType, itemName);
-
-        // 행동 결과에 따른 메시지 표시
-        // if (result) {
-        // switch(actionType) {
-        // case EXPLORE:
-        // view.showMessage("탐험을 완료했습니다.");
-        // break;
-        // case CRAFT:
-        // view.showMessage("아이템 제작을 완료했습니다.");
-        // break;
-        // case REST:
-        // view.showMessage("휴식을 취했습니다. 체력이 회복되었습니다.");
-        // break;
-        // }
-        // }
+        boolean result = actionController.performAction(gameState.getPlayer(), actionType);
 
         return result;
     }
