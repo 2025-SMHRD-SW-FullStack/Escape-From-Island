@@ -95,8 +95,8 @@ public class RandomGenerator {
     public Event generateResourceGainEvent(ResourceType resource, int amount) {
         return new Event(
                 EventType.RESOURCE_GAIN,
-                resource.getLabel() + "를(을)" + amount + "개 획득했습니다!",
-                player -> player.getInventory());
+                resource.getLabel() + "를(을) " + amount + "개 획득했습니다!",
+                player -> player.getInventory().addResource(resource, amount));
     }
 
     /**
@@ -105,37 +105,33 @@ public class RandomGenerator {
      * @return 이벤트 객체
      */
     public Event generateSpecialRandomEvent() {
-        // return null; // 임시 반환값
-
         // 이벤트 유형에 맞게 이벤트 발생 상황 나누기
-        // 자원 획득 이벤트일 때
-        // 식인종, 배발견 -> 0.5%
-        // 나머지 이벤트 -> 나머지 퍼센트 1/6로 나눠서 분배
-        double chance = random.nextDouble() * 1000; // 0.0 ~ 999.999
+        // 식인종, 배발견 이벤트 확률 조정
+        double chance = random.nextDouble() * 100; // 0.0 ~ 99.999
 
-        // 식인종 이벤트
-        if (chance < 5) {
+        // 식인종 이벤트 - 3% 확률
+        if (chance < 3) {
             Event event = new Event(
                     EventType.SPECIAL,
-                    "식인종에게 잡혀버렸습니다... 사망 x.x ",
-                    player -> {
-                    } // 체력 조정 불필요
+                    "식인종에게 잡혀버렸습니다... 게임 오버!",
+                    player -> player.updateHP(-player.getHp()) // 체력을 0으로 만듦
             );
             event.setEndState(GameEndState.DEATH); // 게임 종료 상태 설정
             return event;
-
-        } else if (chance < 10) {
-            // 배 발견
+        }
+        // 배 발견 - 2% 확률
+        else if (chance < 5) {
             Event event = new Event(
                     EventType.SPECIAL,
-                    "배를 발견했습니다! 탈출에 성공! >ㅁ<",
-                    player -> {
-                    });
+                    "배를 발견했습니다! 탈출에 성공했습니다!",
+                    player -> {} // 아무 효과 없음
+            );
             event.setEndState(GameEndState.VICTORY); // 게임 종료 상태 설정
             return event;
-        } else {
-            // 나머지 6가지 : 990개 중 각 165씩 할당
-            double subChance = (chance - 10) / 165;
+        } 
+        // 나머지 6가지 일반 이벤트: 95%를 6등분하여 약 15.8%씩 할당
+        else {
+            double subChance = (chance - 5) / 15.8;
             int randomEvent = (int) subChance; // 0~5로 구분
             int hpChance = getRandomNumber(5, 10);
 
@@ -175,6 +171,7 @@ public class RandomGenerator {
                             "길을 잃어 에너지를 소비했습니다.",
                             player -> player.useAP(1));
                 case 5:
+                default:
                     return new Event(
                             EventType.SPECIAL,
                             "산딸기를 발견했습니다!",
@@ -183,9 +180,7 @@ public class RandomGenerator {
                                 player.addAP(1);
                             });
             }
-
         }
-        throw new IllegalStateException("정의되지 않은 이벤트입니다.");
     }
 
     /**

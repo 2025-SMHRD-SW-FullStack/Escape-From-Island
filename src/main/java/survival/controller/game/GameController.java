@@ -1,18 +1,15 @@
 package survival.controller.game;
 
-import survival.dto.GameEndDTO;
 import survival.model.game.GameState;
 import survival.model.game.Inventory;
 import survival.model.game.Player;
 import survival.model.user.User;
 import survival.model.game.ActionType;
-import survival.model.game.GameEndState;
 import survival.controller.user.AuthController;
 import survival.controller.user.AchievementController;
 import survival.util.Constants;
-import survival.util.DTOConverter;
 import survival.view.GameView;
-import static survival.util.Constants.*;
+import survival.dto.GameEndDTO;
 
 import java.util.List;
 
@@ -46,31 +43,19 @@ public class GameController {
         // 게임 상태 초기화
         Player player = new Player(100, 100, Constants.INITIAL_AP, new Inventory());
 
-        gameState = new GameState(Constants.INITIAL_DAY, player, false, false, null);
-        processGame();
-    }
-
-    /**
-     * 하루 진행 처리
-     */
-    public void processDay() {
-        // 메소드 구현 부분
-        // 하루 동안 발생하는 게임의 핵심 로직
-        // 자원 변화, 상태 변화 등
-
-        // 오늘이 몇 일차인지 출력
-        view.displayDay(gameState.getDay());
-        view.showMessage("일차");
-
-        // 플레이어 상태 표시
-        Player player = gameState.getPlayer();
-        view.displayPlayerStatus(player);
-
-        // 하루에 한 번만 행동 처리
+        gameState = new GameState(Constants.INITIAL_DAY, player);
+        
+        // 업적 획득 목록 초기화
+        if (achievementController != null) {
+            achievementController.resetEarnedAchievements();
+        }
+        
         processGame();
 
-        // 하루 종료 처리 호출
-        endDay();
+        // 게임 시작 시 업적 체크 (첫 생존자 업적)
+        if (achievementController != null) {
+            achievementController.checkAndUpdateAchievements(gameState);
+        }
     }
 
     /**
@@ -83,8 +68,10 @@ public class GameController {
         gameState.nextDay(); // 일차 +1 , 여기에 AP도 자동으로 추가됨
         view.showMessage("다음 날로 넘어갑니다. 행동력이 회복되었습니다!");
 
-        // 다음 날 진행
-        processDay();
+        // 하루 종료 후 업적 체크 (생존 전문가 업적)
+        if (achievementController != null) {
+            achievementController.checkAndUpdateAchievements(gameState);
+        }
     }
 
     /**
@@ -110,71 +97,100 @@ public class GameController {
      */
     public boolean handleRegistration(String id, String pw) {
 
-        return false; // 임시 반환값
+        boolean membership = authController.register(id, pw);
+        if (membership) {
+            return true;
+        }
+        return false;
     }
 
     /**
      * 게임 진행
      */
     public void processGame() {
+        // 게임 상태가 초기화되지 않았다면 게임 시작 처리
         if (gameState == null) {
             startGame();
             return;
         }
 
-        // 플레이어 상태 표시 
-        Player player = gameState.getPlayer();
+        // 게임 실행 플래그
+        boolean isGameRunning = true;
 
-        view.displayPlayerStatus(player);
+        // 날짜 기반 메인 루프
+        while (isGameRunning && gameState.getDay() <= Constants.DAYS_TO_ESCAPE) {
+            // 오늘이 몇 일차인지 출력
+            view.displayDay(gameState.getDay());
 
-        // 행동 메뉴 표시
-        view.showMessage("\n행동을 선택하세요:");
-        view.showMessage("1. 탐험하기");
-        view.showMessage("2. 아이템 제작");
-        view.showMessage("3. 휴식하기");
+            // 플레이어 상태 표시
+            Player player = gameState.getPlayer();
 
-        int choice = view.getIntInput(1, 3);
+            // 일일 행동 루프 - 행동력이 0이 될 때까지 반복
+            while (isGameRunning && player.getAp() > 0) {
+                // 행동 메뉴 표시
+                view.displayPlayerStatus(player);
 
-        // 선택한 행동 처리
-        boolean isDone = false;
+                view.showMessage("\n행동을 선택하세요:");
+                view.showMessage("1. 탐험하기");
+                
+                // 뗏목 제작 가능 여부 확인
+                boolean canCraftRaft = actionController.canCraftRaft(player);
+                String craftOption = "2. 뗏목 제작";
+                if (canCraftRaft) {
+                    craftOption += " (가능)";
+                }
+                view.showMessage(craftOption);
+                
+                view.showMessage("3. 휴식하기");
+                int choice = view.getIntInput(1, 3);
 
-        boolean isDayOver = gameState.getDay() <= Constants.DAYS_TO_ESCAPE;
+                boolean isDone = false;
+                switch (choice) {
+                    case 1: // 탐험
+                        isDone = handleAction(ActionType.EXPLORE);
+                        break;
+                    case 2: // 뗏목 제작
+                        isDone = handleAction(ActionType.CRAFT);
+                        break;
+                    case 3: // 휴식
+                        isDone = handleAction(ActionType.REST);
+                        break;
+                }
 
-        while (isDayOver) {
-            int currentAP = gameState.getPlayer().getAp();
-
-            if (currentAP <= 0) {
-                view.showMessage("행동력이 부족합니다.");
-                break;
+                // 결과 처리
+                if (!isDone) {
+                    // 행동 실패 (handleAction 메서드에서 메시지 처리)
+                }
+                
+                // 게임 종료 여부 체크 
+                if (isGameEnded()) {
+                    isGameRunning = false;
+                    break;
+                }
             }
 
-            switch (choice) {
-                case 1: // 탐험
-                    isDone = handleAction(ActionType.EXPLORE);
-                    break;
-                case 2: // 제작
-                    isDone = handleAction(ActionType.CRAFT);
-                    break;
-                case 3: // 휴식
-                    isDone = handleAction(ActionType.REST);
-                    break;
+            // 하루 종료 처리
+            if (isGameRunning) {
+                if (player.getAp() <= 0) {
+                    view.showMessage("밤이 깊었습니다. 잠이 쏟아져 근처에서 잠자리 준비를 하고 잠에 들었습니다.");
+                }
+                
+                // 마지막 날이 아니면 다음 날로 넘어감
+                if (gameState.getDay() < Constants.DAYS_TO_ESCAPE) {
+                    endDay();
+                } else {
+                    // 마지막 날에 도달하고 탈출하지 못했으면 게임 실패
+                    endGame(false);
+                    isGameRunning = false;
+                }
             }
-
-            // 결과 처리
-            if (!isDone) {
-                view.showMessage("행동력이 부족합니다.");
-            }
-
-            endDay();
         }
-
     }
 
     /**
      * 플레이어 행동 처리
      * 
      * @param actionType 행동 유형
-     * @param itemName   아이템 이름 (제작 시)
      * @return 처리 결과
      */
     private boolean handleAction(ActionType actionType) {
@@ -182,9 +198,106 @@ public class GameController {
             return false;
         }
 
+        // 행동력이 부족한지 먼저 확인
+        Player player = gameState.getPlayer();
+        if (!player.hasAP(actionType.getApCost())) {
+            view.showMessage("행동력이 부족합니다.");
+            return false;
+        }
+
         boolean result = actionController.performAction(gameState.getPlayer(), actionType);
 
+        // 게임 종료 여부 체크 (특별 이벤트로 인한 종료)
+        if (result) {
+            if (actionType == ActionType.EXPLORE) {
+                // 플레이어 체력 확인 (사망 체크)
+                if (gameState.getPlayer().getHp() <= 0) {
+                    // 사망 시 게임 종료 처리
+                    endGame(false);
+                    return true; // 사망했지만 행동은 수행된 것으로 처리
+                }
+                
+                // 탐험 후 업적 체크 (자원 수집가 업적)
+                if (achievementController != null) {
+                    achievementController.checkAndUpdateAchievements(gameState);
+                }
+            } else if (actionType == ActionType.CRAFT) {
+                // 뗏목 제작 성공 시 화면에 결과 표시 후 정상적으로 게임 종료
+                endGame(true); // 승리로 게임 종료
+                
+                // 아래 값을 null로 설정하면 isGameEnded()에서 게임 종료로 인식
+                gameState = null;
+                return true;
+            }
+        }
+
         return result;
+    }
+
+    /**
+     * 게임 종료 여부 확인
+     * 
+     * @return 게임 종료 여부
+     */
+    private boolean isGameEnded() {
+        // gameState가 null이면 게임 종료
+        if (gameState == null) {
+            return true;
+        }
+        
+        Player player = gameState.getPlayer();
+        
+        // 플레이어 사망 체크
+        if (player.getHp() <= 0) {
+            return true;
+        }
+        
+        // 마지막 날짜 체크
+        if (gameState.getDay() > Constants.DAYS_TO_ESCAPE) {
+            return true;
+        }
+        
+        // 기타 종료 조건 체크 가능
+        
+        return false;
+    }
+
+    /**
+     * 게임 종료 처리
+     * 
+     * @param isSuccess 게임 성공 여부
+     */
+    private void endGame(boolean isSuccess) {
+        // 업적 체크 (탈출 성공 또는 실패)
+        if (achievementController != null) {
+            achievementController.checkAndUpdateAchievements(isSuccess ? null : gameState);
+        }
+        
+        // 게임 종료 메시지 결정
+        String message;
+        if (isSuccess) {
+            message = "축하합니다! 뗏목을 타고 섬을 탈출하는데 성공했습니다!";
+        } else {
+            // 실패 원인 파악 (시간 초과 또는 사망)
+            if (gameState != null && gameState.getPlayer().getHp() > 0 && gameState.getDay() >= Constants.DAYS_TO_ESCAPE) {
+                // 시간 초과로 인한 실패
+                message = "제한된 " + Constants.DAYS_TO_ESCAPE + "일 안에 탈출하지 못했습니다. 생존에 실패했습니다.";
+            } else {
+                // 사망으로 인한 실패
+                message = "체력이 모두 소진되어 사망했습니다. 다음에 다시 도전하세요.";
+            }
+        }
+        
+        // 게임 결과 표시
+        view.displayEnding(new GameEndDTO(isSuccess, message));
+        
+        // 획득한 업적 표시
+        if (achievementController != null && achievementController.hasEarnedNewAchievements()) {
+            achievementController.displayEarnedAchievements(view);
+        }
+        
+        // 게임 상태 초기화
+        gameState = null;
     }
 
     /**
