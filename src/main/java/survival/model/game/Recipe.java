@@ -7,8 +7,7 @@ import java.util.Map;
  */
 public class Recipe {
     // 필드
-    private Map<String, Integer> resources; // 필요한 자원
-    private Map<String, Integer> items; // 필요한 아이템
+    private Map<ResourceType, Integer> resources; // 필요한 자원
 
     /**
      * 생성자
@@ -16,9 +15,8 @@ public class Recipe {
      * @param resources 필요한 자원 맵
      * @param items     필요한 아이템 맵
      */
-    public Recipe(Map<String, Integer> resources, Map<String, Integer> items) {
+    public Recipe(Map<ResourceType, Integer> resources) {
         this.resources = resources;
-        this.items = items;
     }
 
     /**
@@ -29,7 +27,7 @@ public class Recipe {
      */
     public boolean canCraft(Inventory inventory) {
         return resources.entrySet().stream()
-                .filter(resource -> inventory.getResourceCount(resource.getKey()) > resource.getValue())
+                .filter(resource -> inventory.getResourceCount(resource.getKey().toString()) > resource.getValue())
                 .findAny()
                 .isPresent();
     }
@@ -39,16 +37,7 @@ public class Recipe {
      * 
      * @return 필요한 자원 맵
      */
-    public Map<String, Integer> getResourceRequirements() {
+    public Map<ResourceType, Integer> getResource() {
         return resources;
-    }
-
-    /**
-     * 아이템 요구사항 반환
-     * 
-     * @return 필요한 아이템 맵
-     */
-    public Map<String, Integer> getItemRequirements() {
-        return items;
     }
 }
