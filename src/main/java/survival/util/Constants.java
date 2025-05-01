@@ -22,9 +22,10 @@ public class Constants {
     public static final int MAX_RESOURCE_AMOUNT = 5;
     
     // 게임 이벤트 확률
+    // 탐험 0.7 이벤트 0.3
     public static final double EVENT_CHANCE = 0.3;
     public static final double DAMAGE_EVENT_CHANCE = 0.4;
-    public static final double RESOURCE_EVENT_CHANCE = 0.5;
+    public static final double RESOURCE_EVENT_CHANCE = 0.7; // 
     public static final double HEAL_EVENT_CHANCE = 0.1;
     
     // 아이템 제작 관련 상수
