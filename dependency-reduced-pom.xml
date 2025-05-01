@@ -62,7 +62,5 @@
     <maven.compiler.target>17</maven.compiler.target>
     <main.class>survival.Main</main.class>
     <maven.compiler.source>17</maven.compiler.source>
-    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
   </properties>
 </project>
