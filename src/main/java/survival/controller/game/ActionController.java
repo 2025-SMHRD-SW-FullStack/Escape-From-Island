@@ -36,7 +36,7 @@ public class ActionController {
      * @param itemName 제작할 아이템 이름 (제작 행동인 경우)
      * @return 행동 결과 상태 (성공 : true, 실패 : false)
      */
-    public boolean performAction(Player player, ActionType actionType, String itemName) {
+    public boolean performAction(Player player, ActionType actionType) {
         // 행동력 확인
         if (!player.hasAP(actionType.getApCost())) {
             return false; // 행동력 부족
@@ -51,7 +51,7 @@ public class ActionController {
                 explore(player);
                 return true;
             case CRAFT:
-                return craft(player, itemName);
+                return craft(player);
             case REST:
                 rest(player);
                 return true;
@@ -65,7 +65,27 @@ public class ActionController {
      * @param player 플레이어
      */
     public void explore(Player player) {
-        // 메소드 구현 부분
+        // 플레이어의 자원 획득
+    	// Player 객체를 통해 자원을 인벤토리에 추가(저장)해야 함!
+    	// Player.inventory.addResource (?) <- 자원 추가 메소드
+    	// 아직 코드 구현 안함
+    	
+    	// 이벤트 발생 (이벤트 발생 여부 확인 메소드 isEventTriggered())
+    	// Yes -> 랜덤 이벤트 처리
+    	if(random.isEventTriggered()) {
+    		Event event = getRandomEvent();
+    		
+    		// 이벤트 효과 실행
+    		event.execute(player);
+    		
+    		// 이벤트 설명 출력
+    		view.showMessage("[이벤트 발생!] " + event.getDescription());
+    	} else {	
+    		// No -> 자원 획득 메시지 출력
+    		view.showMessage(selectedResource.getLabel() + "를(을)" + amount + "개 획득했습니다!");
+    		
+    	}
+
     	// 자원 획득 갯수가 1~3개 중 몇 개 나올지 정하는 변수
     	
     	// 자원 선택 갯수에 맞게 자원 타입 랜덤하게 생성 (반복문)
@@ -93,29 +113,7 @@ public class ActionController {
     	ResourceType selectedResource = findResources[choice-1];
     	
     	// 선택한 자원의 획득량 결정 (예: 1~3 랜덤)
-    	int amount = random.getRandomNumber(1, 3);
-    	
-    	// 플레이어의 자원 획득
-    	// Player 객체를 통해 자원을 인벤토리에 추가(저장)해야 함!
-    	// Player.inventory.addResource (?) <- 자원 추가 메소드
-    	// 아직 코드 구현 안함
-    	
-    	// 이벤트 발생 (이벤트 발생 여부 확인 메소드 isEventTriggered())
-    	// Yes -> 랜덤 이벤트 처리
-    	if(random.isEventTriggered()) {
-    		Event event = getRandomEvent();
-    		
-    		// 이벤트 효과 실행
-    		event.execute(player);
-    		
-    		// 이벤트 설명 출력
-    		view.showMessage("[이벤트 발생!] " + event.getDescription());
-    	} else {	
-    		// No -> 자원 획득 메시지 출력
-    		view.showMessage(selectedResource.getLabel() + "를(을)" + amount + "개 획득했습니다!");
-    		
-    	}
-    	
+    	int amount = random.getRandomNumber(1, 3);	   	
     }
     
     /**
@@ -124,16 +122,16 @@ public class ActionController {
      * @param itemName 아이템 이름
      * @return 제작 성공 여부
      */
-    public boolean craft(Player player, String itemName) {
-        // CraftingController 객체에서 현재 인벤토리로 제작
-    	// 가능한 아이템 목록을 반환하기 getCraftableItems()
-    	// 아이템 선택 : 아이템 제작 처리인 craftItem() 메소드 호출
-    	
-    	// 해당 아이템을 만들 수 있는지 확인
-    	
-    	// 레시피나 이런 게 없어서 아직 구현하지 못함
+    public boolean craft(Player player) {
+        if(!craftingController.canCraft(player)) {
+            view.showMessage("현재 땟목을 제작할 수 없습니다.");
+            return false;
+        }
 
-    	return false; // 임시 반환값
+        craftingController.craftItem(player);
+        view.showMessage("땟목을 제작하였습니다.");
+        
+    	return true;
     }
     
     /**
