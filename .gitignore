@@ -1,6 +1,11 @@
-target
+target/
 # Eclipse 관련 파일
 .classpath
 .project
 .settings/
 .vscodetarget/
+
+# .exe, .jar, .zip 파일 제외
+*.exe
+*.jar
+*.zip
