@@ -1,5 +1,6 @@
 package survival.controller.game;
 
+import survival.model.game.GameEndState;
 import survival.model.game.GameState;
 import survival.model.game.Inventory;
 import survival.model.game.Player;
@@ -9,7 +10,6 @@ import survival.controller.user.AuthController;
 import survival.controller.user.AchievementController;
 import survival.util.Constants;
 import survival.view.GameView;
-import survival.dto.GameEndDTO;
 
 import java.util.List;
 
@@ -273,23 +273,23 @@ public class GameController {
             achievementController.checkAndUpdateAchievements(isSuccess ? null : gameState);
         }
         
-        // 게임 종료 메시지 결정
-        String message;
+        // 게임 종료 상태 결정
+        GameEndState endState;
         if (isSuccess) {
-            message = "축하합니다! 뗏목을 타고 섬을 탈출하는데 성공했습니다!";
+            endState = GameEndState.VICTORY;
         } else {
             // 실패 원인 파악 (시간 초과 또는 사망)
             if (gameState != null && gameState.getPlayer().getHp() > 0 && gameState.getDay() >= Constants.DAYS_TO_ESCAPE) {
-                // 시간 초과로 인한 실패
-                message = "제한된 " + Constants.DAYS_TO_ESCAPE + "일 안에 탈출하지 못했습니다. 생존에 실패했습니다.";
+                // 시간 초과로 인한 실패도 DEATH 상태로 처리
+                endState = GameEndState.DEATH;
             } else {
                 // 사망으로 인한 실패
-                message = "체력이 모두 소진되어 사망했습니다. 다음에 다시 도전하세요.";
+                endState = GameEndState.DEATH;
             }
         }
         
         // 게임 결과 표시
-        view.displayEnding(new GameEndDTO(isSuccess, message));
+        view.displayEnding(endState);
         
         // 획득한 업적 표시
         if (achievementController != null && achievementController.hasEarnedNewAchievements()) {

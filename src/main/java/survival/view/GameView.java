@@ -1,10 +1,12 @@
 package survival.view;
 
-import survival.dto.GameEndDTO;
-import survival.dto.InventoryDTO;
+import survival.model.game.GameEndState;
+import survival.model.game.Inventory;
 import survival.model.game.Player;
+import survival.model.game.ResourceType;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * 게임 화면 인터페이스
@@ -65,15 +67,15 @@ public interface GameView {
     
     /**
      * 게임 종료 화면 표시
-     * @param endDTO 게임 종료 DTO
+     * @param endState 게임 종료 상태
      */
-    void displayEnding(GameEndDTO endDTO);
+    void displayEnding(GameEndState endState);
     
     /**
      * 인벤토리 내용 표시
-     * @param inventoryDTO 인벤토리 DTO
+     * @param inventory 인벤토리
      */
-    void displayInventory(InventoryDTO inventoryDTO);
+    void displayInventory(Inventory inventory);
     
     /**
      * 제작 메뉴 표시
