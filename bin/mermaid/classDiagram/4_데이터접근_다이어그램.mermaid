@@ -1,0 +1,102 @@
+classDiagram
+    %% 데이터 접근 다이어그램: 데이터베이스 관련 클래스
+
+    %% 데이터베이스 관련 관계
+    AuthController --> UserDAO : 사용
+    AchievementController --> AchievementDAO : 사용
+    User "1" --o "*" Achievement : 획득함
+    DatabaseManager -- UserDAO : 사용
+    DatabaseManager -- AchievementDAO : 사용
+    
+    class DatabaseManager {
+        -Connection connection
+        -static DatabaseManager instance
+        -String url
+        -String user
+        -String password
+        +getInstance() DatabaseManager
+        +getConnection() Connection
+        +initDatabase() void
+        -DatabaseManager()
+        +closeConnection() void
+    }
+
+    class UserDAO {
+        -Connection connection
+        +UserDAO()
+        +registerUser(String username, String password) boolean
+        +authenticateUser(String username, String password) User
+        +getUserById(int userId) User
+        +updateLastLogin(int userId) void
+        -hashPassword(String password) String
+        -verifyPassword(String input, String stored) boolean
+    }
+
+    class AchievementDAO {
+        -Connection connection
+        +AchievementDAO()
+        +getAllAchievements() List~Achievement~
+        +getUserAchievements(int userId) List~Achievement~
+        +unlockAchievement(int userId, int achievementId) boolean
+        +checkAchievement(int userId, String condition) boolean
+    }
+
+    class User {
+        -int userId
+        -String username
+        -Date createdAt
+        -Date lastLogin
+        +User()
+        +User(int userId, String username, Date createdAt, Date lastLogin)
+        +getUserId() int
+        +getUsername() String
+        +getCreatedAt() Date
+        +getLastLogin() Date
+        +setUserId(int userId) void
+        +setUsername(String username) void
+        +setCreatedAt(Date createdAt) void
+        +setLastLogin(Date lastLogin) void
+    }
+
+    class Achievement {
+        -int achievementId
+        -String title
+        -String description
+        -String condition
+        -String type
+        +Achievement()
+        +Achievement(int id, String title, String desc, String cond, String type)
+        +getAchievementId() int
+        +getTitle() String
+        +getDescription() String
+        +getCondition() String
+        +getType() String
+        +setAchievementId(int id) void
+        +setTitle(String title) void
+        +setDescription(String desc) void
+        +setCondition(String cond) void
+        +setType(String type) void
+    }
+
+    class AuthController {
+        -UserDAO userDAO
+        -User currentUser
+        +AuthController()
+        +register(String username, String password) boolean
+        +login(String username, String password) boolean
+        +getCurrentUser() User
+        +logout() void
+    }
+
+    class AchievementController {
+        -AchievementDAO achievementDAO
+        -User currentUser
+        +AchievementController()
+        +AchievementController(User currentUser)
+        +setCurrentUser(User user) void
+        +checkAndUpdateAchievements(GameState gameState) void
+        +getUserAchievements() List~Achievement~
+        +getAchievementTitles() List~String~
+        +getTotalAchievementsCount() int
+        +processAchievements(GameView view) void
+    } 

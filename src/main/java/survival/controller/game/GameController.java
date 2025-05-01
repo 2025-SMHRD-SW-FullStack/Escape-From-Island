@@ -152,8 +152,11 @@ public class GameController {
      * @return 회원가입 성공 여부
      */
     public boolean handleRegistration(String id, String pw) {
-
-        return false; // 임시 반환값
+    	boolean membership = authController.register(id, pw);
+    	if(membership) {
+        return true;
+    	}
+    	return false;
     }
 
     /**
@@ -174,7 +177,8 @@ public class GameController {
         view.showMessage("1. 탐험하기");
         view.showMessage("2. 아이템 제작");
         view.showMessage("3. 휴식하기");
-
+        view.showMessageNoln("살아남아야 한다. 살아남기 위해 뭘 해야 할까? ");
+        
         int choice = view.getIntInput(1, 3);
 
         // 선택한 행동 처리

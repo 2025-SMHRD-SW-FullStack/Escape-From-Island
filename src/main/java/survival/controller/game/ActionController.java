@@ -3,6 +3,7 @@ package survival.controller.game;
 import survival.model.game.Player;
 import survival.model.game.ResourceType;
 import survival.model.game.Event;
+import survival.model.game.Inventory;
 
 import java.util.Scanner;
 
@@ -18,7 +19,6 @@ public class ActionController {
     private RandomGenerator random;
     private CraftingController craftingController;
     private GameView view;
-    
     /**
      * 생성자
      * @param view 게임 화면
@@ -127,6 +127,7 @@ public class ActionController {
     public boolean craft(Player player, String itemName) {
         // CraftingController 객체에서 현재 인벤토리로 제작
     	// 가능한 아이템 목록을 반환하기 getCraftableItems()
+    	
     	// 아이템 선택 : 아이템 제작 처리인 craftItem() 메소드 호출
     	
     	// 해당 아이템을 만들 수 있는지 확인

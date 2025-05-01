@@ -1,0 +1,30 @@
+flowchart TD
+    A[이벤트 발생] --> B[RandomEvent 생성]
+    B --> C[Event 객체 생성]
+    C --> D[Event.execute 호출]
+    D --> E{이벤트 유형}
+    
+    E -->|RESOURCE_GAIN| F1[추가 자원 획득]
+    F1 --> F2[Inventory.addResource]
+    F2 --> F3[자원 추가 메시지 표시]
+    
+    E -->|DAMAGE| G1[플레이어 데미지]
+    G1 --> G2[player.updateHP]
+    G2 --> G3[데미지 메시지 표시]
+    G2 --> G4{HP <= 0?}
+    G4 -->|Yes| G5[게임 종료 - 사망]
+    G4 -->|No| G3
+    
+    E -->|HEAL| H1[플레이어 회복]
+    H1 --> H2[player.updateHP]
+    H2 --> H3[회복 메시지 표시]
+    
+    E -->|SPECIAL| I1[특별 이벤트 처리]
+    I1 --> I2[특별 효과 적용]
+    I2 --> I3[특별 이벤트 메시지 표시]
+    
+    F3 --> J[이벤트 처리 결과 표시]
+    G3 --> J
+    H3 --> J
+    I3 --> J
+    G5 --> J

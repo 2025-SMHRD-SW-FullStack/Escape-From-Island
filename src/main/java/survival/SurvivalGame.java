@@ -37,7 +37,7 @@ public class SurvivalGame {
         // 초기화 실패 시 오류 메시지 표시
         if (!dbInitSuccess) {
             view.displayError("데이터베이스 초기화 실패로 게임을 시작할 수 없습니다.");
-            return true; // 임시로 변경했습니다. 4/30 15:53 최호철
+            return false; // 임시로 변경했습니다. 4/30 15:53 최호철
         }
 
         initialized = true;
@@ -101,7 +101,8 @@ public class SurvivalGame {
                     break;
 
                 case 2: // 회원 가입 화면 구현
-                    // 가입할 아이디 입력
+                	view.showMessage(UIConstants.REGISTER_HEADER);
+                	// 가입할 아이디 입력
                     view.showMessageNoln(UIConstants.INPUT_USERNAME);
                     String userid = view.getStringInput();
                     // 가입할 비밀번호 입력

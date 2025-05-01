@@ -1,0 +1,22 @@
+flowchart TD
+    A[CraftingController.craftItem 호출] --> B[제작 메뉴 표시 - CraftingController.getCraftableItems]
+    B --> C[제작 가능 아이템 목록 계산 - Inventory와 레시피 비교]
+    C --> D[사용자 아이템 선택 - UI를 통한 아이템 ID 입력]
+    D --> E[CraftingController.canCraft 호출 - 재료 확인]
+    E --> F{재료 충분? - Recipe.canCraft}
+    
+    F -->|Yes| G1[Recipe.consumeResources 호출 - 자원 소모]
+    G1 --> G2[Inventory.removeResource로 필요 자원 차감]
+    G2 --> G3[Inventory.addItem으로 제작된 아이템 추가]
+    G3 --> G4[플레이어 인벤토리 업데이트 - '플레이어 행동 흐름 플로우차트.mermaid' 참조]
+    G4 --> H[성공 메시지 표시 - UIConstants.SUCCESS_CRAFT]
+    
+    F -->|No| I[제작 실패 메시지 표시 - UIConstants.FAIL_CRAFT]
+    
+    H --> J[행동 결과 출력]
+    I --> J
+    
+    %% 특별 아이템 검사 (뗏목 제작 시 게임 승리 조건 확인)
+    G3 --> K{뗏목 제작?}
+    K -->|Yes| L[GameState.checkVictoryCondition 호출 - '게임 진행 흐름 플로우차트.mermaid' 참조]
+    K -->|No| H

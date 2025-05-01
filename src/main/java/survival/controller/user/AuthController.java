@@ -25,7 +25,6 @@ public class AuthController {
      * @return 회원가입 성공 여부
      */
     public boolean register(String username, String password) {
-    	
         return userDAO.registerUser(username, password);
     }
     
