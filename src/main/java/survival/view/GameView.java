@@ -2,7 +2,7 @@ package survival.view;
 
 import survival.dto.GameEndDTO;
 import survival.dto.InventoryDTO;
-import survival.dto.PlayerDTO;
+import survival.model.game.Player;
 
 import java.util.List;
 
@@ -48,9 +48,8 @@ public interface GameView {
     
     /**
      * 플레이어 상태 표시
-     * @param playerDTO 플레이어 DTO
      */
-    void displayPlayerStatus(PlayerDTO playerDTO);
+    void displayPlayerStatus(Player player);
     
     /**
      * 현재 일차 표시
