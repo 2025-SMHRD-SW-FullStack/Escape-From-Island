@@ -3,11 +3,8 @@ package survival.view;
 import survival.model.game.GameEndState;
 import survival.model.game.Inventory;
 import survival.model.game.Player;
-import survival.model.game.ResourceType;
 
 import java.util.List;
-import java.util.Map;
-
 /**
  * 게임 화면 인터페이스
  */

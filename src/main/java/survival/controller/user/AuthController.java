@@ -23,8 +23,13 @@ public class AuthController {
      * @param username 사용자명
      * @param password 비밀번호
      * @return 회원가입 성공 여부
+     * @throws IllegalArgumentException 이미 존재하는 사용자명인 경우
      */
-    public boolean register(String username, String password) {
+    public boolean register(String username, String password) throws IllegalArgumentException {
+        // 사용자명 중복 확인
+        if (userDAO.checkUserExists(username)) {
+            throw new IllegalArgumentException("이미 존재하는 사용자명입니다.");
+        }
     	
         return userDAO.registerUser(username, password);
     }
@@ -34,10 +39,17 @@ public class AuthController {
      * @param username 사용자명
      * @param password 비밀번호
      * @return 로그인 성공 여부
+     * @throws IllegalArgumentException 존재하지 않는 계정이거나 비밀번호가 일치하지 않는 경우
      */
-    public boolean login(String username, String password) {
+    public boolean login(String username, String password) throws IllegalArgumentException {
     	currentUser = userDAO.authenticateUser(username, password);
-        return currentUser.getUsername().equals(username);
+        
+        // 사용자가 존재하지 않는 경우
+        if (currentUser == null) {
+            throw new IllegalArgumentException("사용자명 또는 비밀번호가 일치하지 않습니다.");
+        }
+        
+        return true;
     }
     
     /**
