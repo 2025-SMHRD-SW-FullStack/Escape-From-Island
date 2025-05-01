@@ -1,7 +1,6 @@
 package survival.controller.game;
 
 import survival.dto.GameEndDTO;
-import survival.dto.PlayerDTO;
 import survival.model.game.GameState;
 import survival.model.game.Inventory;
 import survival.model.game.Player;
@@ -64,8 +63,8 @@ public class GameController {
         view.showMessage("일차");
 
         // 플레이어 상태 표시
-        PlayerDTO playerDTO = DTOConverter.convertToDTO(gameState.getPlayer());
-        view.displayPlayerStatus(playerDTO);
+        Player player = gameState.getPlayer();
+        view.displayPlayerStatus(player);
 
         // 하루에 한 번만 행동 처리
         processGame();
@@ -123,9 +122,10 @@ public class GameController {
             return;
         }
 
-        // 플레이어 상태 표시 - DTO 사용
-        PlayerDTO playerDTO = DTOConverter.convertToDTO(gameState.getPlayer());
-        view.displayPlayerStatus(playerDTO);
+        // 플레이어 상태 표시 
+        Player player = gameState.getPlayer();
+
+        view.displayPlayerStatus(player);
 
         // 행동 메뉴 표시
         view.showMessage("\n행동을 선택하세요:");
