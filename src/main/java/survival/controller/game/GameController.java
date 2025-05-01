@@ -42,6 +42,7 @@ public class GameController {
     public void startGame() {
         // 게임 상태 초기화
         gameState = new GameState();
+        gameState.getPlayer().setGameState(gameState);
         processGame();
     }
     
