@@ -136,6 +136,7 @@ public class AchievementDAO {
 						 "AND NOT EXISTS (SELECT 1 FROM USER_ACHIEVEMENTS ua " +
 						 "                WHERE ua.achievement_id = a.achievement_id " +
 						 "                  AND ua.user_id = ?)";
+
 			psmt = connection.prepareStatement(sql);
 			psmt.setString(1, condition);
 			psmt.setInt(2, userId);

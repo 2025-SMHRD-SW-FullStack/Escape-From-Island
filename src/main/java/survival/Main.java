@@ -20,12 +20,8 @@ public class Main {
     /**
      * 메인 메소드
      */
-    public static void main(String[] args) {
-    	
-    	
+    public static void main(String[] args) {    	
         try {         
-        	
-
             
             // 시작 헤더 출력
         	System.out.println(AsciiArt.asciiMain); 

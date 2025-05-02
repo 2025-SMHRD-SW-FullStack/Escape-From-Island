@@ -60,25 +60,27 @@ public class AchievementController {
     /**
      * 게임 상태에 따른 업적 확인 및 업데이트
      * @param gameState 게임 상태
+     * @param isVictory 승리 여부 (게임 종료 시에만 사용)
      */
-    public void checkAndUpdateAchievements(GameState gameState) {
+    public void checkAndUpdateAchievements(GameState gameState, boolean isVictory) {
         if (currentUser == null) {
             return;
         }
-        
-        // 게임이 종료되었을 경우(gameState == null)에도 업적 체크는 진행
         
         // 1. 첫 생존자 업적 (게임 시작)
         unlockAchievementByCondition("START_GAME");
         
         // 게임 상태가 null(게임 종료)인 경우
         if (gameState == null) {
-            // 2. 탈출 성공 업적 (섬에서 탈출)
-            unlockAchievementByCondition("ESCAPE_ISLAND");
-            
-            // 3. 생존 전문가 업적 - 체력 80% 이상으로 탈출 성공했을 때만 획득
-            if (isLastHealthy) {
-                unlockAchievementByCondition("SURVIVE_HEALTHY");
+            // 승리한 경우에만 탈출 관련 업적 부여
+            if (isVictory) {
+                // 2. 탈출 성공 업적 (섬에서 탈출)
+                unlockAchievementByCondition("ESCAPE_ISLAND");
+                
+                // 3. 생존 전문가 업적 - 체력 80% 이상으로 탈출 성공했을 때만 획득
+                if (isLastHealthy) {
+                    unlockAchievementByCondition("SURVIVE_HEALTHY");
+                }
             }
             
             return;
@@ -91,6 +93,16 @@ public class AchievementController {
         if (hasCollectedAllResources(gameState)) {
             unlockAchievementByCondition("COLLECT_ALL_RESOURCES");
         }
+    }
+    
+    /**
+     * 이전 버전과의 호환성을 위한 오버로딩 메서드
+     * @param gameState 게임 상태
+     */
+    public void checkAndUpdateAchievements(GameState gameState) {
+        // gameState가 null이라도 승리가 아닌 것으로 처리
+        // 승리는 반드시 GameController.endGame(true)에서만 설정되도록 함
+        checkAndUpdateAchievements(gameState, false);
     }
     
     /**

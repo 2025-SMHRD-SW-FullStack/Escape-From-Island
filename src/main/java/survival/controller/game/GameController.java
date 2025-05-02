@@ -281,7 +281,9 @@ public class GameController {
     private void endGame(boolean isSuccess) {
         // 업적 체크 (탈출 성공 또는 실패)
         if (achievementController != null) {
-            achievementController.checkAndUpdateAchievements(isSuccess ? null : gameState);
+            // 게임 상태가 null이더라도 승리 여부는 isSuccess 값으로 직접 전달
+            // 실패했을 때는 업적을 체크하지만 승리 관련 업적은 획득하지 않음
+            achievementController.checkAndUpdateAchievements(null, isSuccess);
         }
         
         // 게임 종료 상태 결정

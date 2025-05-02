@@ -132,7 +132,7 @@ public class RandomGenerator {
             event.setEndState(GameEndState.VICTORY); // 게임 종료 상태 설정
             return event;
         } 
-        // 나머지 6가지 일반 이벤트: 95%를 6등분하여 약 15.8%씩 할당
+        // 나머지 6가지 일반 이벤트 : 95%를 6등분하여 약 15.8%씩 할당
         else {
             double subChance = (chance - 5) / 15.8;
             int randomEvent = (int) subChance; // 0~5로 구분
