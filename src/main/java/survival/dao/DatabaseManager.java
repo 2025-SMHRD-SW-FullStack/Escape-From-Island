@@ -98,7 +98,6 @@ public class DatabaseManager {
     private void loadConfig() {
         try (InputStream input = getClass().getClassLoader().getResourceAsStream("config.properties")) {
             if (input == null) {
-                System.out.println("config.properties 파일을 찾을 수 없습니다.");
                 // Oracle 기본값 설정
                 driver = "oracle.jdbc.driver.OracleDriver";
                 url = "jdbc:oracle:thin:@project-db-campus.smhrd.com:1524:XE";
